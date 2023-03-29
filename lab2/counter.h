@@ -2,6 +2,7 @@
 #define COUNTER_H
 
 #include <iostream>
+#include <bitset>
 #include "colors.h"
 
 class counter
@@ -27,9 +28,11 @@ public:
     std::cout << RED << "Licznik zniszczony" << CLEAR << std::endl;
   }
 
-  void operator=(const counter& other)
+  int operator=(counter &other)
   {
     cnt = other.cnt;
+    other.setCnt(0);
+    return cnt;
   }
 
   int operator+=(const int x)
@@ -43,9 +46,9 @@ public:
     return cnt + x;
   }
 
-  void operator~()
+  int operator~()
   {
-    cnt = 0 - cnt;
+    return (0 - cnt);
   }
 
   void operator()()
@@ -62,12 +65,26 @@ public:
   {
     ++cnt;
   }
-  
+
   void operator++(int)
   {
     cnt++;
   }
-  
+
+  friend std::istream& operator>>(std::istream &is, counter &c)
+  {
+    int x;
+    is >> x;
+    c.setCnt(x);
+    return is;
+  }
+
+  friend std::ostream& operator<<(std::ostream &os, counter &c)
+  {
+    os << c.getCnt();
+    return os;
+  }
+
   operator int() const
   {
     return cnt;
@@ -75,7 +92,7 @@ public:
 
   operator double() const
   {
-    return (double) cnt;
+    return (double)cnt;
   }
 
   int getCnt()

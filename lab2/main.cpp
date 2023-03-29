@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "counter.h"
 #include "debug.h"
 #include "colors.h"
@@ -69,9 +70,35 @@ int main(int argc, char *argv[])
 
   br();
 
-  std::cout << "Negacja licznika: " << (int) licznik1 << std::endl;
+  std::cout << "Negacja licznika3: " << (int) ~licznik3 << std::endl;
 
   br();
 
+  std::cout << "Strumienie: " << licznik3 << std::endl;
+
+  std::stringstream test("10");
+
+  test >> licznik3;
+
+  std::cout << "Przypisanie: " << licznik3 << std::endl;
+
+  br();
+
+  std::cout << "sprawdzenie resetu stanu licznika" << std::endl;
+
+  counter licznik4(10);
+  counter licznik5(5);
+
+  std::cout << "Wartość licznika 4: " << licznik4.getCnt() << std::endl;
+  std::cout << "Wartość licznika 5: " << licznik5.getCnt() << std::endl;
+
+  licznik4 = licznik5;
+
+  std::cout << "Wartość licznika 4: " << licznik4.getCnt() << std::endl;  
+  std::cout << "Wartość licznika 5: " << licznik5.getCnt() << std::endl;  
+
+
+  br();
+  
   return 0;
 }

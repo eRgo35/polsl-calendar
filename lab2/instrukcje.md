@@ -12,9 +12,9 @@ Deklaracje klasy counter umiescic w pliku naglowkowym *.h, natomiast definicje w
         i dlaczego?],
       - [x] operator () (bez argumentu inkrementuje zawartosc licznika o 1, z argumentem - o podana wartosc),
       - [x] operatory post- i pre- inkremetacji (++counter, counter++),
-      - [ ] operator negacji (~counter),
+      - [x] operator negacji (~counter),
       - [ ] operatory << oraz >> do wyswietlania i pobierania zawartosci licznika ze standardowych strumieni cout i cin [dlaczego 
         wymagaja zaprzyjaznienia?], wyswietlanie zawartosci w postaci np. 8-bitowej liczby binarnej (mozna wykorzystac funkcje 
         bitset - trzeba dolaczyc plik naglowkowy <bitset>),
-      - [ ] operator przeniesienia zawartosci licznika (w przypadku pola statycznego, po przeniesieniu, mozna wyzerowac licznik 
+      - [x] operator przeniesienia zawartosci licznika (w przypadku pola statycznego, po przeniesieniu, mozna wyzerowac licznik 
         zrodlowy).
