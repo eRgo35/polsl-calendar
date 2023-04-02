@@ -66,9 +66,9 @@ public:
     ++cnt;
   }
 
-  void operator++(int)
+  int operator++(int)
   {
-    cnt++;
+    return cnt++;
   }
 
   friend std::istream& operator>>(std::istream &is, counter &c)
