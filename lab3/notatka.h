@@ -42,7 +42,9 @@ public:
   friend std::ostream &operator<<(std::ostream &out, notatka &nota)
   {
     std::cout << ORANGE << "Użycie operatora <<" << CLEAR << std::endl;
-    out << nota.tresc;
+    out << "Treść: " << nota.getTresc() << std::endl;
+    out << "Autor: " << nota.getAutor().nazwisko << " " << nota.getAutor().imie << std::endl;
+    out << "Data: " << nota.getDate();
     return out;
   }
 
@@ -56,6 +58,14 @@ public:
     return autor;
   }
 
+  std::string getDate()
+  {
+    char buffer[100];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d", &autor.date);
+
+    return buffer;
+  }
+  
   void setTresc(std::string newTresc)
   {
     tresc = newTresc;
