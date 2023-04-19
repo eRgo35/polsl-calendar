@@ -32,6 +32,7 @@
       "args": [
         "-fdiagnostics-color=always",
         "-g",
+        "-lncurses",
         // "${fileDirname}/${fileBasenameNoExtension}.cpp",
         "${fileDirname}/**.cpp",
         // "${fileDirname}/**.h",
