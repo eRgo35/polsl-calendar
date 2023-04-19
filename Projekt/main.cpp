@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include <ncurses.h>
+#include <gtest/gtest.h>
 
 std::string month_array[12] = {"January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 std::string day_array[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -22,8 +23,11 @@ std::string get_day(int &day)
   return day_array[day];
 }
 
-int main()
+int main(int argc, char **argv)
 {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+
   // std::time_t t = std::time(0);
   // std::tm *now = std::localtime(&t);
 
@@ -49,38 +53,43 @@ int main()
   //   std::cout << std::endl;
   // }
 
-  initscr();
-  keypad(stdscr, TRUE);
-  noecho();
+  // initscr();
+  // keypad(stdscr, TRUE);
+  // noecho();
 
-  attron(A_BOLD);
-  attron(COLOR_PAIR(1));
-  printw("Hello World");
-  attroff(COLOR_PAIR(1));
-  attroff(A_BOLD);
+  // attron(A_BOLD);
+  // attron(COLOR_PAIR(1));
+  // printw("Hello World");
+  // attroff(COLOR_PAIR(1));
+  // attroff(A_BOLD);
 
-  int key;
-  while ((key = getch()) != 'q')
-  {
-    switch (key)
-    {
-    case KEY_UP:
-      printw("^");
-      break;
-    case KEY_DOWN:
-      printw(".");
-      break;
-    case KEY_LEFT:
-      printw("<");
-      break;
-    case KEY_RIGHT:
-      printw(">");
-      break;
-    default:
-      break;
-    }
-  }
+  // curs_set(1);
 
-  endwin();
+  // int x, y;
+  // getyx(stdscr, y, x);
+
+  // int key;
+  // while ((key = getch()) != 'q')
+  // {
+  //   switch (key)
+  //   {
+  //   case KEY_UP:
+  //     move(--y, x);
+  //     break;
+  //   case KEY_DOWN:
+  //     move(++y, x);
+  //     break;
+  //   case KEY_LEFT:
+  //     move(y, --x);
+  //     break;
+  //   case KEY_RIGHT:
+  //     move(y, ++x);
+  //     break;
+  //   default:
+  //     break;
+  //   }
+  // }
+
+  // endwin();
   return 0;
 }
