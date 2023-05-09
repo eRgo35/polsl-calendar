@@ -65,6 +65,10 @@
     "optional": "cpp",
     "iomanip": "cpp",
     "variant": "cpp",
-    "bitset": "cpp"
+    "bitset": "cpp",
+    "any": "cpp",
+    "charconv": "cpp",
+    "format": "cpp",
+    "span": "cpp"
   }
 }

@@ -51,6 +51,20 @@ Sun Mar  9 | 8:00 - 12:00   exam
 Sun May 16 | All day        birthday
 ```
 
+### Zarządzanie wydarzeniami
+Jako interfejs zarządzania proponuję prosty kreator pozwalający wpisać nazwę wydarzenia, datę i godzinę kiedy występuje, koloru oraz dodatkowe noty.
+
+```
+Name: _________________
+Starts: __/__/____ __:__
+Ends: __/__/____ __:__
+Color: #______
+Notes: _______________________________
+
+[Save] [Cancel]
+```
+Podobny układ pojawi się w przypadku edycji i podglądu (jedynie zmienią się dostępne przyciski u dołu układu).
+
 ## Keybinds
 
  - `→` - next day
@@ -67,16 +81,3 @@ Sun May 16 | All day        birthday
  - `Enter` - show details 
  - `Backspace` - go back
  - `q` - quit
-
-
-## Additional notes
-
-- if color isn't supported I can use `*` to indicate that there's an event
-- there won't be any reminder system because the calendar will not work as a daemon
-
-## Classes ideas
-
-- A calendar class to fetch days
-- Classes for each layout derived from the calendar class
-- An event class to manage events
-- An events container class which holds multiple events
