@@ -1,11 +1,35 @@
 #include <iostream>
 #include <ncurses.h>
+#include <string>
+#include <cstring>
+#include <gtest/gtest.h>
 
 #include "event.h"
 #include "calendar.cpp"
 
-int main()
+int main(int argc, char *argv[])
 {
+  bool test_mode = false;
+
+  for (int i = 1; i < argc; i++)
+  {
+    if (std::strcmp(argv[i], "--test-mode") == 0)
+    {
+      test_mode = true;
+    }
+    else
+    {
+      std::cerr << "Error: Unknown argument " << argv[i] << std::endl;
+      return 1;
+    }
+  }
+
+  if (test_mode)
+  {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+  }
+
   initscr();
   cbreak();
   noecho();

@@ -32,7 +32,7 @@
     "type": "cppdbg",
     "request": "launch",
     "program": "${fileDirname}/build/${fileBasenameNoExtension}",
-    // "args": [],
+    "args": ["--test-mode"],
     // "args": ["--help"],
     // "args": ["--help", "-a", "hello", "-b", "world"],
     "stopAtEntry": false,

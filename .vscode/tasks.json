@@ -37,7 +37,7 @@
         "-lgtest",
         "-lpthread",
         // "${fileDirname}/${fileBasenameNoExtension}.cpp",
-        "${fileDirname}/**.cpp",
+        "${fileDirname}/main.cpp",
         "${fileDirname}/**/*.cpp",
         // "${fileDirname}/**.h",
         "-o",

@@ -10,7 +10,10 @@ private:
   int month;
   int year;
 
+  bool isLeapYear(int year);
+
 public:
+  Date();
   Date(int day, int month, int year);
 
   int getDay();

@@ -10,6 +10,7 @@ private:
   int minute;
 
 public:
+  Time();
   Time(int hour, int minute);
 
   int getHour();

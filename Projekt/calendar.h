@@ -21,14 +21,14 @@ public:
   void setDisplayMode();
   
 
-  void createEvent(const Event &event);
-  bool deleteEvent(const Event &event);
-  bool editEvent(const Event &event);
-  std::vector<Event> getEvents(const Date &date) const;
-  std::string getMonthView(const Date &date) const;
-  std::string getWeekView(const Date &date) const;
-  std::string getDayView(const Date &date) const;
-  std::string getScheduleView() const;
+  void createEvent(Event &event);
+  bool deleteEvent(Event &event);
+  bool editEvent(Event &event);
+  std::vector<Event> getEvents(Date &date);
+  std::string getMonthView(Date &date);
+  std::string getWeekView(Date &date);
+  std::string getDayView(Date &date);
+  std::string getScheduleView();
 };
 
 #endif
