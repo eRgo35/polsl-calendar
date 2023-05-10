@@ -20,9 +20,9 @@ public:
   int getMonth();
   int getYear();
 
-  void setDay(int day);
-  void setMonth(int month);
-  void setYear(int year);
+  bool setDay(int day);
+  bool setMonth(int month);
+  bool setYear(int year);
 
   bool isValid();
   std::string toString();

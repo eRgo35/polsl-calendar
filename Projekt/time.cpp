@@ -28,12 +28,12 @@ int Time::getMinute()
 
 void Time::setHour(int hour)
 {
-  hour = this->hour;
+  this->hour = hour;
 }
 
 void Time::setMinute(int minute)
 {
-  minute = this->minute;
+  this->minute = minute;
 }
 
 bool Time::isValid()

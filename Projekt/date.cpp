@@ -43,17 +43,17 @@ int Date::getYear()
 
 void Date::setDay(int day)
 {
-  day = this->day;
+  this->day = day;
 }
 
 void Date::setMonth(int month)
 {
-  month = this->month;
+  this->month = month;
 }
 
 void Date::setYear(int year)
 {
-  year = this->year;
+  this->year = year;
 }
 
 bool Date::isValid()

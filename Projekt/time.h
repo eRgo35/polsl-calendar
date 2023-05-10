@@ -16,8 +16,8 @@ public:
   int getHour();
   int getMinute();
 
-  void setHour(int hour);
-  void setMinute(int minute);
+  bool setHour(int hour);
+  bool setMinute(int minute);
 
   bool isValid();
   std::string toString();
