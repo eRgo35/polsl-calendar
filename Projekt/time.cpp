@@ -26,14 +26,16 @@ int Time::getMinute()
   return minute;
 }
 
-void Time::setHour(int hour)
+bool Time::setHour(int hour)
 {
   this->hour = hour;
+  return true;
 }
 
-void Time::setMinute(int minute)
+bool Time::setMinute(int minute)
 {
   this->minute = minute;
+  return true;
 }
 
 bool Time::isValid()

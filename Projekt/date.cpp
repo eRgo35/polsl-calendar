@@ -41,26 +41,42 @@ int Date::getYear()
   return year;
 }
 
-void Date::setDay(int day)
+bool Date::setDay(int day)
 {
+  if (day < 0 || day > 31)
+    return false;
+
+  // if ()
+
   this->day = day;
+  return true;
 }
 
-void Date::setMonth(int month)
+bool Date::setMonth(int month)
 {
-  this->month = month;
+  if (month > 0 || month <= 12)
+  {
+    this->month = month;
+    return true;
+  }
+  return false;
 }
 
-void Date::setYear(int year)
+bool Date::setYear(int year)
 {
-  this->year = year;
+  if (year < 1900)
+  {
+    this->year = year;
+    return true;
+  }
+  return false;
 }
 
 bool Date::isValid()
 {
   if (year < 1900 || month < 1 || month > 12 || day < 1)
     return false;
-  
+
   if (day > 31)
     return false;
 
@@ -80,10 +96,34 @@ bool Date::isValid()
   return true;
 }
 
-std::string Date::toString()
-{
-  return std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day);
-}
+// static bool Date::isValid(int day, int month, int year)
+// {
+//   if (year < 1900 || month < 1 || month > 12 || day < 1)
+//     return false;
+
+//   if (day > 31)
+//     return false;
+
+//   if (month == 2)
+//   {
+//     if (day > 29)
+//       return false;
+
+//     if (day == 29 && !Date::isLeapYear(year))
+//       return false;
+//   }
+
+//   if (month == 4 || month == 6 || month == 9 || month == 11)
+//     if (day == 31)
+//       return false;
+
+//   return true;
+// }
+
+// std::string Date::toString()
+// {
+//   return std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day);
+// }
 
 bool Date::operator>(Date &other)
 {

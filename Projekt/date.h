@@ -25,6 +25,7 @@ public:
   bool setYear(int year);
 
   bool isValid();
+  static bool isValid(int day, int month, int year);
   std::string toString();
 
   bool operator>(Date &other);
