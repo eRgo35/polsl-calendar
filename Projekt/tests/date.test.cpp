@@ -35,50 +35,58 @@ TEST(Date, setters)
 
 TEST(Date, day_isValid)
 {
+  Date today;
+
   Date first_oob_day(34, 1, 1970);
   Date second_oob_day(31, 4, 1970);
   Date third_oob_day(29, 2, 1999);
   Date fourth_oob_day(0, 1, 1970);
   Date fifth_oob_day(-1, 1, 1970);
 
-  EXPECT_FALSE(first_oob_day.isValid());
-  EXPECT_FALSE(second_oob_day.isValid());
-  EXPECT_FALSE(third_oob_day.isValid());
-  EXPECT_FALSE(fourth_oob_day.isValid());
-  EXPECT_FALSE(fifth_oob_day.isValid());
+  EXPECT_TRUE((first_oob_day == today));
+  EXPECT_TRUE((second_oob_day == today));
+  EXPECT_TRUE((third_oob_day == today));
+  EXPECT_TRUE((fourth_oob_day == today));
+  EXPECT_TRUE((fifth_oob_day == today));
 }
 
 TEST(Date, month_isValid)
 {
+  Date today;
+
   Date first_oob_month(1, -1, 1970);
   Date second_oob_month(1, 0, 1970);
   Date third_oob_month(1, 13, 1999);
 
-  EXPECT_FALSE(first_oob_month.isValid());
-  EXPECT_FALSE(second_oob_month.isValid());
-  EXPECT_FALSE(third_oob_month.isValid());
+  EXPECT_TRUE((first_oob_month == today));
+  EXPECT_TRUE((second_oob_month == today));
+  EXPECT_TRUE((third_oob_month == today));
 }
 
 TEST(Date, year_isValid)
 {
+  Date today;
+
   Date first_oob_year(1, 1, 1899);
   Date second_oob_year(1, 1, 0);
   Date third_oob_year(1, 1, -1);
 
-  EXPECT_FALSE(first_oob_year.isValid());
-  EXPECT_FALSE(second_oob_year.isValid());
-  EXPECT_FALSE(third_oob_year.isValid());
+  EXPECT_TRUE((first_oob_year == today));
+  EXPECT_TRUE((second_oob_year == today));
+  EXPECT_TRUE((third_oob_year == today));
 }
 
 TEST(Date, leap_years)
 {
+  Date today;
+
   Date leap(29, 2, 1900);
   Date leap2(29, 2, 2000);
-  Date leap3(29, 2, 2024);
+  Date leap3(29, 2, 2020);
 
-  EXPECT_FALSE(leap.isValid());
-  EXPECT_TRUE(leap2.isValid());
-  EXPECT_TRUE(leap3.isValid());
+  EXPECT_TRUE((leap == today));
+  EXPECT_FALSE((leap2 == today));
+  EXPECT_FALSE((leap3 == today));
 }
 
 TEST(Date, toString)

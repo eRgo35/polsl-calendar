@@ -9,6 +9,9 @@ private:
   int hour;
   int minute;
 
+  static bool isValid(int hour, int minute);
+  bool isValid();
+
 public:
   Time();
   Time(int hour, int minute);
@@ -19,7 +22,6 @@ public:
   bool setHour(int hour);
   bool setMinute(int minute);
 
-  bool isValid();
   std::string toString();
 
   bool operator>(Time &other);

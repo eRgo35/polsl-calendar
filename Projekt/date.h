@@ -10,7 +10,9 @@ private:
   int month;
   int year;
 
-  bool isLeapYear(int year);
+  static bool isLeapYear(int year);
+  static bool isValid(int day, int month, int year);
+  bool isValid();
 
 public:
   Date();
@@ -24,8 +26,6 @@ public:
   bool setMonth(int month);
   bool setYear(int year);
 
-  bool isValid();
-  static bool isValid(int day, int month, int year);
   std::string toString();
 
   bool operator>(Date &other);

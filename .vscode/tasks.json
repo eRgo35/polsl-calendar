@@ -41,7 +41,7 @@
         "${fileDirname}/**/*.cpp",
         // "${fileDirname}/**.h",
         "-o",
-        "${fileDirname}/build/${fileBasenameNoExtension}",
+        "${fileDirname}/build/main",
       ],
       "options": {
         "cwd": "${fileDirname}"

@@ -3,12 +3,15 @@
 
 #include <iostream>
 
-struct Color
+class Color
 {
 private:
   int red;
   int green;
   int blue;
+
+  static bool isValid(int red, int green, int blue);
+  bool isValid();
 
 public:
   Color();
@@ -22,8 +25,9 @@ public:
   bool setGreen(int green);
   bool setBlue(int blue);
 
-  bool isValid();
   std::string toString();
+
+  bool operator==(Color &other);
 };
 
 #endif

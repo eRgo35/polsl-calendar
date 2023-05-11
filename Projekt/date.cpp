@@ -1,17 +1,8 @@
 #include <iostream>
 #include <ctime>
-#include <ncurses.h>
 #include <string>
 
 #include "date.h"
-
-bool Date::isLeapYear(int year)
-{
-  if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))
-    return true;
-
-  return false;
-}
 
 Date::Date()
 {
@@ -24,7 +15,19 @@ Date::Date()
   year = now->tm_year + 1900;
 }
 
-Date::Date(int day, int month, int year) : day(day), month(month), year(year) {}
+Date::Date(int day, int month, int year)
+{
+  if (!Date::isValid(day, month, year))
+  {
+    *this = Date();
+  }
+  else
+  {
+    this->day = day;
+    this->month = month;
+    this->year = year;
+  }
+}
 
 int Date::getDay()
 {
@@ -43,10 +46,8 @@ int Date::getYear()
 
 bool Date::setDay(int day)
 {
-  if (day < 0 || day > 31)
+  if (!Date::isValid(day, month, year))
     return false;
-
-  // if ()
 
   this->day = day;
   return true;
@@ -54,25 +55,31 @@ bool Date::setDay(int day)
 
 bool Date::setMonth(int month)
 {
-  if (month > 0 || month <= 12)
-  {
-    this->month = month;
-    return true;
-  }
-  return false;
+  if (!Date::isValid(day, month, year))
+    return false;
+
+  this->month = month;
+  return true;
 }
 
 bool Date::setYear(int year)
 {
-  if (year < 1900)
-  {
-    this->year = year;
+  if (!Date::isValid(day, month, year))
+    return false;
+
+  this->year = year;
+  return true;
+}
+
+bool Date::isLeapYear(int year)
+{
+  if (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))
     return true;
-  }
+
   return false;
 }
 
-bool Date::isValid()
+bool Date::isValid(int day, int month, int year)
 {
   if (year < 1900 || month < 1 || month > 12 || day < 1)
     return false;
@@ -96,34 +103,15 @@ bool Date::isValid()
   return true;
 }
 
-// static bool Date::isValid(int day, int month, int year)
-// {
-//   if (year < 1900 || month < 1 || month > 12 || day < 1)
-//     return false;
+bool Date::isValid()
+{
+  return isValid(day, month, year);
+}
 
-//   if (day > 31)
-//     return false;
-
-//   if (month == 2)
-//   {
-//     if (day > 29)
-//       return false;
-
-//     if (day == 29 && !Date::isLeapYear(year))
-//       return false;
-//   }
-
-//   if (month == 4 || month == 6 || month == 9 || month == 11)
-//     if (day == 31)
-//       return false;
-
-//   return true;
-// }
-
-// std::string Date::toString()
-// {
-//   return std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day);
-// }
+std::string Date::toString()
+{
+  return std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day);
+}
 
 bool Date::operator>(Date &other)
 {

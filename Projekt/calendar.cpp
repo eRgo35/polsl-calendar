@@ -1,6 +1,7 @@
 #include "calendar.h"
 #include "date.cpp"
 #include "time.cpp"
+#include "color.cpp"
 
 #include <ncurses.h>
 

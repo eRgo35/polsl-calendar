@@ -31,7 +31,7 @@
     "name": "C++ Debug multiple files",
     "type": "cppdbg",
     "request": "launch",
-    "program": "${fileDirname}/build/${fileBasenameNoExtension}",
+    "program": "${fileDirname}/build/main",
     "args": ["--test-mode"],
     // "args": ["--help"],
     // "args": ["--help", "-a", "hello", "-b", "world"],

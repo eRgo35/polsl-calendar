@@ -29,26 +29,30 @@ TEST(Time, setters)
   EXPECT_EQ(first_time.getMinute(), minute);
 }
 
-TEST(Time, time_isValid)
+TEST(Time, hour_isValid)
 {
+  Time now;
+
   Time first_oob_hour(-1, 10);
   Time second_oob_hour(24, 10);
   Time third_oob_hour(1024, 10);
 
-  EXPECT_FALSE(first_oob_hour.isValid());
-  EXPECT_FALSE(second_oob_hour.isValid());
-  EXPECT_FALSE(third_oob_hour.isValid());
+  EXPECT_TRUE((first_oob_hour == now));
+  EXPECT_TRUE((second_oob_hour == now));
+  EXPECT_TRUE((third_oob_hour == now));
 }
 
 TEST(Time, minute_isValid)
 {
+  Time now;
+
   Time first_oob_minute(13, -1);
   Time second_oob_minute(13, 60);
   Time third_oob_minute(13, 2048);
 
-  EXPECT_FALSE(first_oob_minute.isValid());
-  EXPECT_FALSE(second_oob_minute.isValid());
-  EXPECT_FALSE(third_oob_minute.isValid());
+  EXPECT_TRUE((first_oob_minute == now));
+  EXPECT_TRUE((second_oob_minute == now));
+  EXPECT_TRUE((third_oob_minute == now));
 }
 
 TEST(Time, toString)

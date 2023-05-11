@@ -14,7 +14,18 @@ Time::Time()
   minute = now->tm_min;
 }
 
-Time::Time(int hour, int minute) : hour(hour), minute(minute) {}
+Time::Time(int hour, int minute)
+{
+  if (!Time::isValid(hour, minute))
+  {
+    *this = Time();
+  }
+  else
+  {
+    this->hour = hour;
+    this->minute = minute;
+  }
+}
 
 int Time::getHour()
 {
@@ -28,17 +39,23 @@ int Time::getMinute()
 
 bool Time::setHour(int hour)
 {
+  if (!Time::isValid(hour, minute))
+    return false;
+
   this->hour = hour;
   return true;
 }
 
 bool Time::setMinute(int minute)
 {
+  if (!Time::isValid(hour, minute))
+    return false;
+
   this->minute = minute;
   return true;
 }
 
-bool Time::isValid()
+bool Time::isValid(int hour, int minute)
 {
   if (hour < 0 || hour > 23)
     return false;
@@ -47,6 +64,11 @@ bool Time::isValid()
     return false;
 
   return true;
+}
+
+bool Time::isValid()
+{
+  return isValid(hour, minute);
 }
 
 std::string Time::toString()
@@ -58,7 +80,7 @@ bool Time::operator>(Time &other)
 {
   if (hour > other.getHour())
     return true;
-  
+
   if (minute > other.getMinute())
     return true;
 
@@ -69,7 +91,7 @@ bool Time::operator<(Time &other)
 {
   if (hour < other.getHour())
     return true;
-  
+
   if (minute < other.getMinute())
     return true;
 
@@ -80,7 +102,7 @@ bool Time::operator==(Time &other)
 {
   if (hour != other.getHour())
     return false;
-  
+
   if (minute != other.getMinute())
     return false;
 
