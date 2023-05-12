@@ -7,7 +7,7 @@
     "name": "C++ Debug file",
     "type": "cppdbg",
     "request": "launch",
-    "program": "${fileDirname}/build/${fileBasenameNoExtension}",
+    "program": "${fileDirname}/bin/${fileBasenameNoExtension}",
     "stopAtEntry": false,
     "cwd": "${fileDirname}",
     "environment": [],
@@ -31,10 +31,8 @@
     "name": "C++ Debug multiple files",
     "type": "cppdbg",
     "request": "launch",
-    "program": "${fileDirname}/build/main",
+    "program": "${fileDirname}/../bin/main",
     "args": ["--test-mode"],
-    // "args": ["--help"],
-    // "args": ["--help", "-a", "hello", "-b", "world"],
     "stopAtEntry": false,
     "cwd": "${fileDirname}",
     "environment": [],
@@ -54,5 +52,4 @@
     ],
     "preLaunchTask": "C/C++: g++ build active files"
   }],
-  // "preLaunchTask": "C/C++: g++ build active file"
 }

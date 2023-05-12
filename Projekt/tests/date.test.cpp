@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../date.h"
+#include "../include/date.h"
 
 int day = 16;
 int month = 5;

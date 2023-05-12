@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../color.h"
+#include "../include/color.h"
 
 TEST(Color, inits)
 {

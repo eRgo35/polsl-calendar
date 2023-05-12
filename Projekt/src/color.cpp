@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 
-#include "color.h"
+#include "../include/color.h"
 
 Color::Color()
 {

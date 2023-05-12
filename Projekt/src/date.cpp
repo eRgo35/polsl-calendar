@@ -2,7 +2,7 @@
 #include <ctime>
 #include <string>
 
-#include "date.h"
+#include "../include/date.h"
 
 Date::Date()
 {

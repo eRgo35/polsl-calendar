@@ -9,10 +9,8 @@
         "-g",
         "-lncurses",
         "${fileDirname}/${fileBasenameNoExtension}.cpp",
-        // "${fileDirname}/**.cpp",
-        //"${fileDirname}/**.h",
         "-o",
-        "${fileDirname}/build/${fileBasenameNoExtension}",
+        "${fileDirname}/bin/${fileBasenameNoExtension}",
       ],
       "options": {
         "cwd": "${fileDirname}"
@@ -36,12 +34,10 @@
         "-lncurses",
         "-lgtest",
         "-lpthread",
-        // "${fileDirname}/${fileBasenameNoExtension}.cpp",
-        "${fileDirname}/main.cpp",
-        "${fileDirname}/**/*.cpp",
-        // "${fileDirname}/**.h",
+        // "${fileDirname}/main.cpp",
+        "${fileDirname}/../**/*.cpp",
         "-o",
-        "${fileDirname}/build/main",
+        "${fileDirname}/../bin/main",
       ],
       "options": {
         "cwd": "${fileDirname}"

@@ -4,8 +4,8 @@
 #include <cstring>
 #include <gtest/gtest.h>
 
-#include "event.h"
-#include "calendar.cpp"
+#include "../include/event.h"
+#include "../include/calendar.h"
 
 int main(int argc, char *argv[])
 {

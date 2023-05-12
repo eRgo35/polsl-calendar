@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../time.h"
+#include "../include/time.h"
 
 int hour = 13;
 int minute = 37;

@@ -2,7 +2,7 @@
 #include <string>
 #include <ctime>
 
-#include "time.h"
+#include "../include/time.h"
 
 Time::Time()
 {
