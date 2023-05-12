@@ -16,17 +16,18 @@ public:
   Time();
   Time(int hour, int minute);
 
-  int getHour();
-  int getMinute();
+  int getHour() const;
+  int getMinute() const;
 
   bool setHour(int hour);
   bool setMinute(int minute);
 
   std::string toString();
 
-  bool operator>(Time &other);
-  bool operator<(Time &other);
-  bool operator==(Time &other);
+  bool operator>(const Time &other) const;
+  bool operator<(const Time &other) const;
+  bool operator==(const Time &other) const;
+  bool operator!=(const Time &other) const;
 };
 
 #endif

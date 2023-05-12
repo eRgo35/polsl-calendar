@@ -67,5 +67,6 @@ TEST(Color, operators)
   Color sky_blue(135, 206, 235);
 
   EXPECT_TRUE((coral == same_coral));
+  EXPECT_TRUE((coral != sky_blue));
   EXPECT_FALSE((coral == sky_blue));
 }

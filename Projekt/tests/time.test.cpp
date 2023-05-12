@@ -1,32 +1,49 @@
 #include <gtest/gtest.h>
+#include <ctime>
 #include "../include/time.h"
 
 int hour = 13;
 int minute = 37;
 
-TEST(Time, inits)
+std::time_t tim_t = std::time(0);
+std::tm *time_now = std::localtime(&tim_t);
+
+int now_hour = time_now->tm_hour;
+int now_minute = time_now->tm_min;
+
+TEST(Time, default_constructor)
 {
-  Time first_time;
-  Time second_time(hour, minute);
+  Time time;
+
+  EXPECT_EQ(time.getHour(), now_hour);
+  EXPECT_EQ(time.getMinute(), now_minute);
+}
+
+TEST(Time, constructor_with_parameters)
+{
+  Time time(hour, minute);
+
+  EXPECT_EQ(time.getHour(), hour);
+  EXPECT_EQ(time.getMinute(), minute);
 }
 
 TEST(Time, getters)
 {
-  Time second_time(hour, minute);
+  Time time(hour, minute);
 
-  EXPECT_EQ(second_time.getHour(), hour);
-  EXPECT_EQ(second_time.getMinute(), minute);
+  EXPECT_EQ(time.getHour(), hour);
+  EXPECT_EQ(time.getMinute(), minute);
 }
 
 TEST(Time, setters)
 {
-  Time first_time;
+  Time time;
 
-  first_time.setHour(hour);
-  first_time.setMinute(minute);
+  time.setHour(hour);
+  time.setMinute(minute);
 
-  EXPECT_EQ(first_time.getHour(), hour);
-  EXPECT_EQ(first_time.getMinute(), minute);
+  EXPECT_EQ(time.getHour(), hour);
+  EXPECT_EQ(time.getMinute(), minute);
 }
 
 TEST(Time, hour_isValid)
@@ -70,6 +87,7 @@ TEST(Time, operators)
   Time time4(hour + 1, minute);
 
   EXPECT_TRUE((time1 == time2));
+  EXPECT_TRUE((time1 != time3));
   EXPECT_TRUE((time1 < time4));
   EXPECT_TRUE((time1 > time3));
 }

@@ -26,17 +26,17 @@ Color::Color(int red, int green, int blue)
   }
 }
 
-int Color::getRed()
+int Color::getRed() const
 {
   return red;
 }
 
-int Color::getGreen()
+int Color::getGreen() const
 {
   return green;
 }
 
-int Color::getBlue()
+int Color::getBlue() const
 {
   return blue;
 }
@@ -95,7 +95,7 @@ std::string Color::toString()
   return ("#" + stream.str());
 }
 
-bool Color::operator==(Color &other)
+bool Color::operator==(const Color &other) const
 {
   if (red != other.getRed())
     return false;
@@ -107,4 +107,9 @@ bool Color::operator==(Color &other)
     return false;
 
   return true;
+}
+
+bool Color::operator!=(const Color &other) const
+{
+  return !(*this == other);
 }

@@ -18,9 +18,9 @@ public:
   Date();
   Date(int day, int month, int year);
 
-  int getDay();
-  int getMonth();
-  int getYear();
+  int getDay() const;
+  int getMonth() const;
+  int getYear() const;
 
   bool setDay(int day);
   bool setMonth(int month);
@@ -28,9 +28,10 @@ public:
 
   std::string toString();
 
-  bool operator>(Date &other);
-  bool operator<(Date &other);
-  bool operator==(Date &other);
+  bool operator>(const Date &other) const;
+  bool operator<(const Date &other) const;
+  bool operator==(const Date &other) const;
+  bool operator!=(const Date &other) const;
 };
 
 #endif

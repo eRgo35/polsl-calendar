@@ -29,17 +29,17 @@ Date::Date(int day, int month, int year)
   }
 }
 
-int Date::getDay()
+int Date::getDay() const
 {
   return day;
 }
 
-int Date::getMonth()
+int Date::getMonth() const
 {
   return month;
 }
 
-int Date::getYear()
+int Date::getYear() const
 {
   return year;
 }
@@ -113,7 +113,7 @@ std::string Date::toString()
   return std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day);
 }
 
-bool Date::operator>(Date &other)
+bool Date::operator>(const Date &other) const
 {
   if (year > other.getYear())
     return true;
@@ -127,7 +127,7 @@ bool Date::operator>(Date &other)
   return false;
 }
 
-bool Date::operator<(Date &other)
+bool Date::operator<(const Date &other) const
 {
   if (year < other.getYear())
     return true;
@@ -141,7 +141,7 @@ bool Date::operator<(Date &other)
   return false;
 }
 
-bool Date::operator==(Date &other)
+bool Date::operator==(const Date &other) const
 {
   if (year != other.getYear())
     return false;
@@ -153,4 +153,9 @@ bool Date::operator==(Date &other)
     return false;
 
   return true;
+}
+
+bool Date::operator!=(const Date &other) const
+{
+  return !(*this == other);
 }

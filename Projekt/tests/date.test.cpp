@@ -1,36 +1,56 @@
 #include <gtest/gtest.h>
+#include <ctime>
 #include "../include/date.h"
 
 int day = 16;
 int month = 5;
 int year = 2023;
 
-TEST(Date, inits)
+std::time_t date_t = std::time(0);
+std::tm *date_now = std::localtime(&date_t);
+
+int now_day = date_now->tm_mday;
+int now_month = date_now->tm_mon + 1;
+int now_year = date_now->tm_year + 1900;
+
+TEST(Date, default_constructor)
 {
-  Date first_date;
-  Date second_date(day, month, year);
+  Date date;
+
+  EXPECT_EQ(date.getDay(), now_day);
+  EXPECT_EQ(date.getMonth(), now_month);
+  EXPECT_EQ(date.getYear(), now_year);
+}
+
+TEST(Date, constructor_with_parameters)
+{
+  Date date(day, month, year);
+
+  EXPECT_EQ(date.getDay(), day);
+  EXPECT_EQ(date.getMonth(), month);
+  EXPECT_EQ(date.getYear(), year);
 }
 
 TEST(Date, getters)
 {
-  Date second_date(day, month, year);
+  Date date(day, month, year);
 
-  EXPECT_EQ(second_date.getDay(), day);
-  EXPECT_EQ(second_date.getMonth(), month);
-  EXPECT_EQ(second_date.getYear(), year);
+  EXPECT_EQ(date.getDay(), day);
+  EXPECT_EQ(date.getMonth(), month);
+  EXPECT_EQ(date.getYear(), year);
 }
 
 TEST(Date, setters)
 {
-  Date first_date;
+  Date date;
 
-  first_date.setDay(day);
-  first_date.setMonth(month);
-  first_date.setYear(year);
+  date.setDay(day);
+  date.setMonth(month);
+  date.setYear(year);
 
-  EXPECT_EQ(first_date.getDay(), day);
-  EXPECT_EQ(first_date.getMonth(), month);
-  EXPECT_EQ(first_date.getYear(), year);
+  EXPECT_EQ(date.getDay(), day);
+  EXPECT_EQ(date.getMonth(), month);
+  EXPECT_EQ(date.getYear(), year);
 }
 
 TEST(Date, day_isValid)
@@ -104,6 +124,7 @@ TEST(Date, operators)
   Date date4(day + 1, month, year);
 
   EXPECT_TRUE((date1 == date2));
+  EXPECT_TRUE((date1 != date3));
   EXPECT_TRUE((date1 < date4));
   EXPECT_TRUE((date1 > date3));
 }

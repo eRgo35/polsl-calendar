@@ -27,12 +27,12 @@ Time::Time(int hour, int minute)
   }
 }
 
-int Time::getHour()
+int Time::getHour() const
 {
   return hour;
 }
 
-int Time::getMinute()
+int Time::getMinute() const
 {
   return minute;
 }
@@ -76,7 +76,7 @@ std::string Time::toString()
   return std::to_string(hour) + ":" + std::to_string(minute);
 }
 
-bool Time::operator>(Time &other)
+bool Time::operator>(const Time &other) const
 {
   if (hour > other.getHour())
     return true;
@@ -87,7 +87,7 @@ bool Time::operator>(Time &other)
   return false;
 }
 
-bool Time::operator<(Time &other)
+bool Time::operator<(const Time &other) const
 {
   if (hour < other.getHour())
     return true;
@@ -98,7 +98,7 @@ bool Time::operator<(Time &other)
   return false;
 }
 
-bool Time::operator==(Time &other)
+bool Time::operator==(const Time &other) const
 {
   if (hour != other.getHour())
     return false;
@@ -107,4 +107,9 @@ bool Time::operator==(Time &other)
     return false;
 
   return true;
+}
+
+bool Time::operator!=(const Time &other) const
+{
+  return !(*this == other);
 }

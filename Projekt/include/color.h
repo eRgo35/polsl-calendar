@@ -17,9 +17,9 @@ public:
   Color();
   Color(int red, int green, int blue);
 
-  int getRed();
-  int getGreen();
-  int getBlue();
+  int getRed() const;
+  int getGreen() const;
+  int getBlue() const;
 
   bool setRed(int red);
   bool setGreen(int green);
@@ -27,7 +27,8 @@ public:
 
   std::string toString();
 
-  bool operator==(Color &other);
+  bool operator==(const Color &other) const;
+  bool operator!=(const Color &other) const;
 };
 
 #endif

@@ -24,21 +24,22 @@ public:
       Color &color,
       std::string &notes);
 
-  std::string getName();
-  Date getDate();
-  Time getTime();
-  Color getColor();
-  std::string getNotes();
+  std::string getName() const;
+  Date getDate() const;
+  Time getTime() const;
+  Color getColor() const;
+  std::string getNotes() const;
 
-  void setName(std::string &name);
-  void setDate(Date &date);
-  void setTime(Time &time);
-  void setColor(Color &color);
-  void setNotes(std::string &notes);
+  bool setName(std::string &name);
+  bool setDate(Date &date);
+  bool setTime(Time &time);
+  bool setColor(Color &color);
+  bool setNotes(std::string &notes);
 
-  bool operator<(Event &other);
-  bool operator>(Event &other);
-  bool operator==(Event &other);
+  bool operator<(const Event &other) const;
+  bool operator>(const Event &other) const;
+  bool operator==(const Event &other) const;
+  bool operator!=(const Event &other) const;
 };
 
 #endif
