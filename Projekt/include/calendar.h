@@ -13,6 +13,8 @@ private:
   std::vector<Event> events;
 
 public:
+  Calendar();
+
   void updateDisplay();
   void nextDay();
   void previousDay();

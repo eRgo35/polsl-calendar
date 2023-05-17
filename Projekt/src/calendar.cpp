@@ -5,9 +5,18 @@
 
 #include <ncurses.h>
 
+Calendar::Calendar()
+{
+}
+
 void Calendar::updateDisplay()
 {
   clear();
-  printw("Calendar view\n");
+  printw("Update!\n");
+  
+  for(int i = 0; i < COLS; i++)
+    addch('-');
+
   refresh();
+  getch();
 }
