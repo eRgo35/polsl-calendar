@@ -9,6 +9,8 @@ private:
   int day;
   int month;
   int year;
+  int weekday;
+  int week_number;
 
   static bool isLeapYear(int year);
   static bool isValid(int day, int month, int year);
@@ -21,6 +23,9 @@ public:
   int getDay() const;
   int getMonth() const;
   int getYear() const;
+
+  std::string getWeekDay();
+  int getWeekNumber() const;
 
   bool setDay(int day);
   bool setMonth(int month);

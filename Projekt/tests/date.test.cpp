@@ -128,3 +128,15 @@ TEST(Date, operators)
   EXPECT_TRUE((date1 < date4));
   EXPECT_TRUE((date1 > date3));
 }
+
+TEST(Date, getWeek)
+{
+  Date date(day, month, year);
+  EXPECT_EQ(date.getWeekDay(), "Tue");
+}
+
+TEST(Date, getWeekNumber)
+{
+  Date date(day, month, year);
+  EXPECT_EQ(date.getWeekNumber(), 20);
+}

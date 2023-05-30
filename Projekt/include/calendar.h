@@ -11,6 +11,8 @@ class Calendar
 {
 private:
   std::vector<Event> events;
+  Date today;
+  Time now;
 
 public:
   Calendar();
@@ -27,10 +29,11 @@ public:
   bool deleteEvent(Event &event);
   bool editEvent(Event &event);
   std::vector<Event> getEvents(Date &date);
-  std::string getMonthView(Date &date);
+  void getMonthView(Date &date);
   std::string getWeekView(Date &date);
   std::string getDayView(Date &date);
   std::string getScheduleView();
+  void getHelpView();
 };
 
 #endif

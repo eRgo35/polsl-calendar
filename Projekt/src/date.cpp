@@ -1,18 +1,23 @@
 #include <iostream>
 #include <ctime>
 #include <string>
+#include <chrono>
+#include <ncurses.h>
 
 #include "../include/date.h"
 
 Date::Date()
 {
-  std::time_t t = std::time(0);
+  time_t now = time(NULL);
+  struct tm *tm = localtime(&now);
 
-  std::tm *now = std::localtime(&t);
+  day = tm->tm_mday;
+  month = tm->tm_mon + 1;
+  year = tm->tm_year + 1900;
+  weekday = tm->tm_wday;
 
-  day = now->tm_mday;
-  month = now->tm_mon + 1;
-  year = now->tm_year + 1900;
+  int delta = weekday ? weekday - 1 : 7 - 1;
+  week_number = (tm->tm_yday + 7 - delta) / 7;
 }
 
 Date::Date(int day, int month, int year)
@@ -26,6 +31,18 @@ Date::Date(int day, int month, int year)
     this->day = day;
     this->month = month;
     this->year = year;
+
+    struct tm time_in = {
+        .tm_mday = day,
+        .tm_mon = month - 1,
+        .tm_year = year - 1900,
+    };
+
+    time_t time_temp = mktime(&time_in);
+
+    weekday = localtime(&time_temp)->tm_wday;
+    int delta = weekday ? weekday - 1 : 7 - 1;
+    week_number = (localtime(&time_temp)->tm_yday + 7 - delta) / 7;
   }
 }
 
@@ -42,6 +59,17 @@ int Date::getMonth() const
 int Date::getYear() const
 {
   return year;
+}
+
+std::string Date::getWeekDay()
+{
+  const std::string day[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+  return day[weekday];
+}
+
+int Date::getWeekNumber() const
+{
+  return week_number;
 }
 
 bool Date::setDay(int day)
