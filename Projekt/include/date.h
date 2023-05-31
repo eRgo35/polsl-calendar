@@ -25,6 +25,7 @@ public:
   int getYear() const;
 
   std::string getWeekDay();
+  int getWeekDayNumber();
   int getWeekNumber() const;
 
   bool setDay(int day);

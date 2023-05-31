@@ -67,6 +67,11 @@ std::string Date::getWeekDay()
   return day[weekday];
 }
 
+int Date::getWeekDayNumber()
+{
+  return weekday;
+}
+
 int Date::getWeekNumber() const
 {
   return week_number;

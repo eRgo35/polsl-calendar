@@ -4,10 +4,12 @@
 #include "../include/color.h"
 
 #include <ncurses.h>
+#include <locale.h>
 #include <string>
 
 Calendar::Calendar()
 {
+  setlocale(LC_ALL, "");
   initscr();
   cbreak();
   noecho();
@@ -37,16 +39,16 @@ Calendar::Calendar()
       // calendar.previousWeek();
       break;
     case 'a':
-      // calendar.setDisplayMode(Calendar::MONTH);
+      setDisplayMode(0);
       break;
     case 'w':
-      // calendar.setDisplayMode(Calendar::WEEK);
+      setDisplayMode(1);
       break;
     case 'd':
-      // calendar.setDisplayMode(Calendar::DAY);
+      setDisplayMode(2);
       break;
     case 's':
-      // calendar.setDisplayMode(Calendar::SCHEDULE);
+      setDisplayMode(3);
       break;
     case 'c':
       // calendar.createEvent();
@@ -70,11 +72,26 @@ Calendar::Calendar()
   }
 }
 
+void Calendar::setDisplayMode(int layout)
+{
+  current_layout = layout;
+}
+
 void Calendar::updateDisplay()
 {
   clear();
 
-  getMonthView(today);
+  if (current_layout == 0)
+    getMonthView(today);
+
+  if (current_layout == 1)
+    getWeekView(today);
+
+  if (current_layout == 2)
+    getDayView(today);
+
+  if (current_layout == 3)
+    getScheduleView(today);
 
   getHelpView();
 
@@ -86,30 +103,88 @@ void Calendar::getHelpView()
   for (int i = 0; i < COLS; i++)
     addch('-');
 
+  printw("→ - next day            ");
+  printw("← - previous day         ");
+  printw("↑ - next week              ");
+  printw("↓ - previous week\n");
+  printw("a - month view          ");
+  printw("w - week view            ");
+  printw("d - day view               ");
+  printw("s - schedule view\n");
+  printw("c - create a new event  ");
+  printw("e - edit selected event  ");
+  printw("x - delete selected event\n");
+  printw("Enter - show details    ");
+  printw("Backspace - go back      ");
+  printw("q - quit\n");
 }
 
 void Calendar::getMonthView(Date &date)
 {
-  printw("Month: %d\n", date.getMonth());
-  printw("Year: %d\n", date.getYear());
+  const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"};
+  const char *week_placeholder = "Sun Mon Tue Wed Thu Fri Sat";
 
-  printw("%d\n", date.getWeekNumber());
+  // I know that I know nothing about ncurses
+  // So I center this on my own. Sorry :)
+
+  int header_length = std::string(months[date.getMonth() - 1]).length() + 5;
+  int required_spaces = (27 - header_length) / 2;
+  std::string spacing = "";
+
+  for (int i = 0; i < required_spaces; i++)
+    spacing += " ";
+
+  printw("%s%s %d\n", spacing.c_str(), months[date.getMonth() - 1], date.getYear());
+  printw("%s\n", week_placeholder);
+  // printw("%d\n", date.getWeekNumber());
+  Date first_day_of_the_month(1, date.getMonth(), date.getYear());
+  int first_day = first_day_of_the_month.getWeekDayNumber();
+  // TODO Offset months by days & impl week number bar on the left
+  Date last_month(1, date.getMonth() - 1, date.getYear());
+
+  Date temp_date(date);
 
   int day = 1;
-  for (int i = 0; i < 7; i++)
+  for (int i = 0; i < 6; i++)
   {
     for (int j = 0; j < 7; j++)
     {
-      if (day <= 31)
-      {
-        printw("%d ", day);
-        day++;
-      }
-      else
-      {
-        printw(" ");
-      }
+      if (!temp_date.setDay(day))
+        day = 1;
+
+      printw("%3d ", day);
+      day++;
     }
     printw("\n");
   }
+}
+
+void Calendar::getWeekView(Date &date)
+{
+  printw("Week 10 - March 2023\n");
+  printw("Sun  5 | \n");
+  printw("Mon  6 | meeting\n");
+  printw("Tue  7 | \n");
+  printw("Wed  8 | lectures\n");
+  printw("Thu  9 | exam\n");
+  printw("Fri 10 | \n");
+  printw("Sat 11 | \n");
+}
+
+void Calendar::getDayView(Date &date)
+{
+  printw(" 6 AM |             \n");
+  printw(" 7 AM |             \n");
+  printw(" 8 AM | :   exam   :\n");
+  printw(" 9 AM | :          :\n");
+  printw("10 AM | :..........:\n");
+}
+
+void Calendar::getScheduleView(Date &date)
+{
+  printw("Sun Mar 5  | no events for today\n");
+  printw("Sun Mar 6  | event 1\n");
+  printw("Sun Mar 10 | event 2\n");
+  printw("Sun Mar 15 | event 3\n");
+  printw("Sun Mar 21 | event 4\n");
 }

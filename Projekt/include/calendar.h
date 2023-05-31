@@ -13,6 +13,7 @@ private:
   std::vector<Event> events;
   Date today;
   Time now;
+  int current_layout = 0;
 
 public:
   Calendar();
@@ -22,7 +23,7 @@ public:
   void previousDay();
   void nextWeek();
   void previousWeek();
-  void setDisplayMode();
+  void setDisplayMode(int layout);
   
 
   void createEvent(Event &event);
@@ -30,9 +31,9 @@ public:
   bool editEvent(Event &event);
   std::vector<Event> getEvents(Date &date);
   void getMonthView(Date &date);
-  std::string getWeekView(Date &date);
-  std::string getDayView(Date &date);
-  std::string getScheduleView();
+  void getWeekView(Date &date);
+  void getDayView(Date &date);
+  void getScheduleView(Date &date);
   void getHelpView();
 };
 

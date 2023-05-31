@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
     return RUN_ALL_TESTS();
   }
 
+  // TODO Implement state saving
+
   Calendar calendar;
 
   return 0;
