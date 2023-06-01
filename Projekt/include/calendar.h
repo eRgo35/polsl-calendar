@@ -25,15 +25,19 @@ public:
   void previousWeek();
   void setDisplayMode(int layout);
   
-
   void createEvent(Event &event);
   bool deleteEvent(Event &event);
   bool editEvent(Event &event);
+
   std::vector<Event> getEvents(Date &date);
+
   void getMonthView(Date &date);
   void getWeekView(Date &date);
   void getDayView(Date &date);
   void getScheduleView(Date &date);
+  
+  void getEventView(Date &date);
+
   void getHelpView();
 };
 

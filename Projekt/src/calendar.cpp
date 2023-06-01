@@ -27,16 +27,16 @@ Calendar::Calendar()
     switch (input)
     {
     case KEY_RIGHT:
-      // calendar.nextDay();
+      nextDay();
       break;
     case KEY_LEFT:
-      // calendar.previousDay();
+      previousDay();
       break;
     case KEY_UP:
-      // calendar.nextWeek();
+      nextWeek();
       break;
     case KEY_DOWN:
-      // calendar.previousWeek();
+      previousWeek();
       break;
     case 'a':
       setDisplayMode(0);
@@ -51,7 +51,7 @@ Calendar::Calendar()
       setDisplayMode(3);
       break;
     case 'c':
-      // calendar.createEvent();
+      setDisplayMode(4);
       break;
     case 'e':
       // calendar.editEvent();
@@ -72,6 +72,26 @@ Calendar::Calendar()
   }
 }
 
+void Calendar::nextDay()
+{
+  // TODO Impl cursor moving (dependant on the set DisplayMode())
+}
+
+void Calendar::previousDay()
+{
+  // TODO Impl cursor moving (dependant on the set DisplayMode())
+}
+
+void Calendar::nextWeek()
+{
+  // TODO Impl cursor moving (dependant on the set DisplayMode())
+}
+
+void Calendar::previousWeek()
+{
+  // TODO Impl cursor moving (dependant on the set DisplayMode())
+}
+
 void Calendar::setDisplayMode(int layout)
 {
   current_layout = layout;
@@ -81,42 +101,66 @@ void Calendar::updateDisplay()
 {
   clear();
 
-  if (current_layout == 0)
+  switch (current_layout)
+  {
+  case 0:
     getMonthView(today);
-
-  if (current_layout == 1)
+    break;
+  case 1:
     getWeekView(today);
-
-  if (current_layout == 2)
+    break;
+  case 2:
     getDayView(today);
-
-  if (current_layout == 3)
+    break;
+  case 3:
     getScheduleView(today);
+    break;
+  case 4:
+    getEventView(today);
+    break;
+  default:
+    getScheduleView(today);
+    break;
+  }
 
   getHelpView();
 
   refresh();
 }
 
-void Calendar::getHelpView()
+void Calendar::createEvent(Event &event)
 {
-  for (int i = 0; i < COLS; i++)
-    addch('-');
+  events.push_back(event);
+}
 
-  printw("→ - next day            ");
-  printw("← - previous day         ");
-  printw("↑ - next week              ");
-  printw("↓ - previous week\n");
-  printw("a - month view          ");
-  printw("w - week view            ");
-  printw("d - day view               ");
-  printw("s - schedule view\n");
-  printw("c - create a new event  ");
-  printw("e - edit selected event  ");
-  printw("x - delete selected event\n");
-  printw("Enter - show details    ");
-  printw("Backspace - go back      ");
-  printw("q - quit\n");
+bool Calendar::deleteEvent(Event &event)
+{
+  for (int i = 0; i < events.size(); i++)
+    if (events[i] == event)
+    {
+      events.erase(events.begin() + i);
+      return true;
+    }
+
+  return false;
+}
+
+bool Calendar::editEvent(Event &event)
+{
+  for (int i = 0; i < events.size(); i++)
+    if (events[i] == event)
+    {
+      // TODO Impl edit function
+
+      return true;
+    }
+
+  return false;
+}
+
+std::vector<Event> Calendar::getEvents(Date &date)
+{
+  return events;
 }
 
 void Calendar::getMonthView(Date &date)
@@ -187,4 +231,30 @@ void Calendar::getScheduleView(Date &date)
   printw("Sun Mar 10 | event 2\n");
   printw("Sun Mar 15 | event 3\n");
   printw("Sun Mar 21 | event 4\n");
+}
+
+void Calendar::getEventView(Date &date)
+{
+  printw("Create new event\n\n");
+}
+
+void Calendar::getHelpView()
+{
+  for (int i = 0; i < COLS; i++)
+    addch('-');
+
+  printw("→ - next day            ");
+  printw("← - previous day         ");
+  printw("↑ - next week              ");
+  printw("↓ - previous week\n");
+  printw("a - month view          ");
+  printw("w - week view            ");
+  printw("d - day view               ");
+  printw("s - schedule view\n");
+  printw("c - create a new event  ");
+  printw("e - edit selected event  ");
+  printw("x - delete selected event\n");
+  printw("Enter - show details    ");
+  printw("Backspace - go back      ");
+  printw("q - quit\n");
 }
