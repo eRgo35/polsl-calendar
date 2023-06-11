@@ -7,6 +7,8 @@
 #include <locale.h>
 #include <string>
 
+const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"};
+
 Calendar::Calendar()
 {
   setlocale(LC_ALL, "");
@@ -165,7 +167,6 @@ std::vector<Event> Calendar::getEvents(Date &date)
 
 void Calendar::getMonthView(Date &date)
 {
-  const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"};
   const char *week_placeholder = "Sun Mon Tue Wed Thu Fri Sat";
 
   // I know that I know nothing about ncurses
@@ -226,11 +227,16 @@ void Calendar::getDayView(Date &date)
 
 void Calendar::getScheduleView(Date &date)
 {
-  printw("Sun Mar 5  | no events for today\n");
-  printw("Sun Mar 6  | event 1\n");
-  printw("Sun Mar 10 | event 2\n");
-  printw("Sun Mar 15 | event 3\n");
-  printw("Sun Mar 21 | event 4\n");
+  printw("%s %s %d  | no events for today\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay());
+
+  int max_schedule_length = (events.size() <= 6) ? events.size() : 6;
+
+  for (int i = 0; i < max_schedule_length; i++)
+  {
+    Event event = events[i];
+
+    printw("%s %s %d  | %s\n", event.getStartDate().getWeekDay().c_str(), months[event.getStartDate().getMonth() - 1], event.getStartDate().getDay(), event.getName().c_str());
+  }
 }
 
 void Calendar::getEventView(Date &date)
