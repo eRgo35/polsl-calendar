@@ -19,8 +19,8 @@ public:
   Calendar();
 
   void updateDisplay();
-  void nextDay();
-  void previousDay();
+  void nextDay(Date &date);
+  void previousDay(Date &date);
   void nextWeek();
   void previousWeek();
   void setDisplayMode(int layout);

@@ -51,11 +51,11 @@ Calendar::Calendar()
     switch (input)
     {
     case 'l':
-      nextDay();
+      nextDay(today);
       // KEYRIGHT
       break;
     case 'j':
-      previousDay();
+      previousDay(today);
       // KEYLEFT
       break;
     case 'i':
@@ -101,14 +101,26 @@ Calendar::Calendar()
   }
 }
 
-void Calendar::nextDay()
+void Calendar::nextDay(Date &date)
 {
-  // TODO Impl cursor moving (dependant on the set DisplayMode())
+  if (!date.setDay(date.getDay() + 1))
+  {
+    date.setMonth(date.getMonth() + 1);
+    date.setDay(1);
+  }
 }
 
-void Calendar::previousDay()
+void Calendar::previousDay(Date &date)
 {
-  // TODO Impl cursor moving (dependant on the set DisplayMode())
+  if (!date.setDay(date.getDay() - 1))
+  {
+    date.setMonth(date.getMonth() - 1);
+    
+    if (!date.setDay(31))
+      if (!date.setDay(30))
+        if (!date.setDay(29))
+          date.setDay(28);
+  }
 }
 
 void Calendar::nextWeek()
@@ -194,9 +206,6 @@ void Calendar::getMonthView(Date &date)
 {
   const char *week_placeholder = "Sun Mon Tue Wed Thu Fri Sat";
 
-  // I know that I know nothing about ncurses
-  // So I center this on my own. Sorry :)
-
   int header_length = std::string(months[date.getMonth() - 1]).length() + 5;
   int required_spaces = (27 - header_length) / 2;
   std::string spacing = "";
@@ -223,15 +232,25 @@ void Calendar::getMonthView(Date &date)
   Date temp_date(date);
 
   int day = last_sunday.getDay();
-  // attron(COLOR_PAIR(1));
+  bool first_iteration = true;
   for (int i = 0; i < 6; i++)
   {
     for (int j = 0; j < 7; j++)
     {
-      if (!temp_date.setDay(day))
+      if (!first_iteration && !temp_date.setDay(day))
         day = 1;
 
-      printf("%3d ", day);
+      if (first_iteration && !last_month.setDay(day))
+      {
+        day = 1;
+        first_iteration = false;
+      }
+
+      if (day == date.getDay())
+        printf("\033[1;44m%3d \033[0m", day);
+      else
+        printf("%3d ", day);
+
       day++;
     }
     printf("\n");
