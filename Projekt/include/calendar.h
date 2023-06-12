@@ -39,6 +39,8 @@ public:
   void getEventView(Date &date);
 
   void getHelpView();
+  
+  int days_in_month(Date &date);
 };
 
 #endif

@@ -31,7 +31,6 @@
       "args": [
         "-fdiagnostics-color=always",
         "-g",
-        "-lncurses",
         "-lgtest",
         "-lpthread",
         // "${fileDirname}/main.cpp",

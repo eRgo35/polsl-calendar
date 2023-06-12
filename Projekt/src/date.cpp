@@ -83,6 +83,19 @@ bool Date::setDay(int day)
     return false;
 
   this->day = day;
+
+  struct tm time_in = {
+      .tm_mday = day,
+      .tm_mon = month - 1,
+      .tm_year = year - 1900,
+  };
+
+  time_t time_temp = mktime(&time_in);
+
+  weekday = localtime(&time_temp)->tm_wday;
+  int delta = weekday ? weekday - 1 : 7 - 1;
+  week_number = (localtime(&time_temp)->tm_yday + 7 - delta) / 7;
+
   return true;
 }
 

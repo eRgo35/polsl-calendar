@@ -3,21 +3,38 @@
 #include "../include/time.h"
 #include "../include/color.h"
 
-#include <ncurses.h>
 #include <locale.h>
 #include <string>
+
+#include <unistd.h>
+#include <termios.h>
+
+char getch() {
+        char buf = 0;
+        struct termios old = {0};
+        if (tcgetattr(0, &old) < 0)
+                perror("tcsetattr()");
+        old.c_lflag &= ~ICANON;
+        old.c_lflag &= ~ECHO;
+        old.c_cc[VMIN] = 1;
+        old.c_cc[VTIME] = 0;
+        if (tcsetattr(0, TCSANOW, &old) < 0)
+                perror("tcsetattr ICANON");
+        if (read(0, &buf, 1) < 0)
+                perror ("read()");
+        old.c_lflag |= ICANON;
+        old.c_lflag |= ECHO;
+        if (tcsetattr(0, TCSADRAIN, &old) < 0)
+                perror ("tcsetattr ~ICANON");
+        return (buf);
+}
 
 const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"};
 
 Calendar::Calendar()
 {
   setlocale(LC_ALL, "");
-  initscr();
-  cbreak();
-  noecho();
-  curs_set(0);
-  keypad(stdscr, TRUE);
-
+  
   bool quit = false;
 
   while (!quit)
@@ -28,17 +45,21 @@ Calendar::Calendar()
 
     switch (input)
     {
-    case KEY_RIGHT:
+    case 'l':
       nextDay();
+      // KEYRIGHT
       break;
-    case KEY_LEFT:
+    case 'j':
       previousDay();
+      // KEYLEFT
       break;
-    case KEY_UP:
+    case 'i':
       nextWeek();
+      // KEYUP
       break;
-    case KEY_DOWN:
+    case 'k':
       previousWeek();
+      // KEYDOWN
       break;
     case 'a':
       setDisplayMode(0);
@@ -64,8 +85,9 @@ Calendar::Calendar()
     case '\n':
       // calendar.showEventDetails();
       break;
-    case KEY_BACKSPACE:
+    case '=':
       // calendar.goBack();
+      // BACKSPACE
       break;
     case 'q':
       quit = true;
@@ -101,7 +123,7 @@ void Calendar::setDisplayMode(int layout)
 
 void Calendar::updateDisplay()
 {
-  clear();
+  std::system("clear");
 
   switch (current_layout)
   {
@@ -127,7 +149,6 @@ void Calendar::updateDisplay()
 
   getHelpView();
 
-  refresh();
 }
 
 void Calendar::createEvent(Event &event)
@@ -179,17 +200,26 @@ void Calendar::getMonthView(Date &date)
   for (int i = 0; i < required_spaces; i++)
     spacing += " ";
 
-  printw("%s%s %d\n", spacing.c_str(), months[date.getMonth() - 1], date.getYear());
-  printw("%s\n", week_placeholder);
+  printf("%s%s %d\n", spacing.c_str(), months[date.getMonth() - 1], date.getYear());
+  printf("%s\n", week_placeholder);
   // printw("%d\n", date.getWeekNumber());
   Date first_day_of_the_month(1, date.getMonth(), date.getYear());
-  int first_day = first_day_of_the_month.getWeekDayNumber();
-  // TODO Offset months by days & impl week number bar on the left
-  Date last_month(1, date.getMonth() - 1, date.getYear());
+  int first_day = first_day_of_the_month.getWeekNumber();
+  Date last_month(1, date.getMonth() - 1, date.getYear()); // this is borked if it's January
+
+  Date last_sunday = last_month;
+  for (int i = 1; i <= days_in_month(last_month); i++)
+  {
+    if (last_month.getWeekDayNumber() == 0)
+      last_sunday = last_month;
+
+    last_month.setDay(i);
+  }
 
   Date temp_date(date);
 
-  int day = 1;
+  int day = last_sunday.getDay();
+  // attron(COLOR_PAIR(1));
   for (int i = 0; i < 6; i++)
   {
     for (int j = 0; j < 7; j++)
@@ -197,37 +227,56 @@ void Calendar::getMonthView(Date &date)
       if (!temp_date.setDay(day))
         day = 1;
 
-      printw("%3d ", day);
+      printf("%3d ", day);
       day++;
     }
-    printw("\n");
+    printf("\n");
   }
 }
 
 void Calendar::getWeekView(Date &date)
 {
-  printw("Week 10 - March 2023\n");
-  printw("Sun  5 | \n");
-  printw("Mon  6 | meeting\n");
-  printw("Tue  7 | \n");
-  printw("Wed  8 | lectures\n");
-  printw("Thu  9 | exam\n");
-  printw("Fri 10 | \n");
-  printw("Sat 11 | \n");
+  printf("Week 10 - March 2023\n");
+  printf("Sun  5 | \n");
+  printf("Mon  6 | meeting\n");
+  printf("Tue  7 | \n");
+  printf("Wed  8 | lectures\n");
+  printf("Thu  9 | exam\n");
+  printf("Fri 10 | \n");
+  printf("Sat 11 | \n");
 }
 
 void Calendar::getDayView(Date &date)
 {
-  printw(" 6 AM |             \n");
-  printw(" 7 AM |             \n");
-  printw(" 8 AM | :   exam   :\n");
-  printw(" 9 AM | :          :\n");
-  printw("10 AM | :..........:\n");
+  printf(" 6 AM |             \n");
+  printf(" 7 AM |             \n");
+  printf(" 8 AM | :   exam   :\n");
+  printf(" 9 AM | :          :\n");
+  printf("10 AM | :..........:\n");
 }
 
 void Calendar::getScheduleView(Date &date)
 {
-  printw("%s %s %d  | no events for today\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay());
+  std::vector<Event> events_today;
+
+  for (Event event : events)
+  {
+    if (event.getStartDate() == date)
+      events_today.push_back(event);
+  }
+
+  if (events_today.empty())
+  {
+    printf("%s %s %d  | no events for today\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay());
+  }
+  else if (events_today.size() == 1)
+  {
+    printf("%s %s %d  | %s\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay(), events[0].getName());
+  }
+  else
+  {
+    printf("%s %s %d  | %s and %d more...\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay(), events[0].getName(), events_today.size() - 1);
+  }
 
   int max_schedule_length = (events.size() <= 6) ? events.size() : 6;
 
@@ -235,32 +284,52 @@ void Calendar::getScheduleView(Date &date)
   {
     Event event = events[i];
 
-    printw("%s %s %d  | %s\n", event.getStartDate().getWeekDay().c_str(), months[event.getStartDate().getMonth() - 1], event.getStartDate().getDay(), event.getName().c_str());
+    printf("%s %s %d  | %s\n", event.getStartDate().getWeekDay().c_str(), months[event.getStartDate().getMonth() - 1], event.getStartDate().getDay(), event.getName().c_str());
   }
 }
 
 void Calendar::getEventView(Date &date)
 {
-  printw("Create new event\n\n");
+  printf("Create new event\n\n");
 }
 
 void Calendar::getHelpView()
 {
-  for (int i = 0; i < COLS; i++)
-    addch('-');
+  const int COLS = 50;
 
-  printw("→ - next day            ");
-  printw("← - previous day         ");
-  printw("↑ - next week              ");
-  printw("↓ - previous week\n");
-  printw("a - month view          ");
-  printw("w - week view            ");
-  printw("d - day view               ");
-  printw("s - schedule view\n");
-  printw("c - create a new event  ");
-  printw("e - edit selected event  ");
-  printw("x - delete selected event\n");
-  printw("Enter - show details    ");
-  printw("Backspace - go back      ");
-  printw("q - quit\n");
+  for (int i = 0; i < COLS; i++)
+    printf("-");
+  printf("\n");
+
+  printf("→ - next day            ");
+  printf("← - previous day         ");
+  printf("↑ - next week              ");
+  printf("↓ - previous week\n");
+  printf("a - month view          ");
+  printf("w - week view            ");
+  printf("d - day view               ");
+  printf("s - schedule view\n");
+  printf("c - create a new event  ");
+  printf("e - edit selected event  ");
+  printf("x - delete selected event\n");
+  printf("Enter - show details    ");
+  printf("Backspace - go back      ");
+  printf("q - quit\n");
+}
+
+int Calendar::days_in_month(Date &date)
+{
+  int month = date.getMonth();
+  if (month == 2)
+  {
+    if (Date::isLeapYear(date.getYear()))
+      return 29;
+
+    return 28;
+  }
+
+  if (month == 4 || month == 6 || month == 9 || month == 11)
+    return 30;
+
+  return 31;
 }

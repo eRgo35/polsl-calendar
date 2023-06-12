@@ -12,7 +12,6 @@ private:
   int weekday;
   int week_number;
 
-  static bool isLeapYear(int year);
   static bool isValid(int day, int month, int year);
   bool isValid();
 
@@ -33,6 +32,7 @@ public:
   bool setYear(int year);
 
   std::string toString();
+  static bool isLeapYear(int year);
 
   bool operator>(const Date &other) const;
   bool operator<(const Date &other) const;
