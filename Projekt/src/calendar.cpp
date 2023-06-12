@@ -6,27 +6,32 @@
 #include <locale.h>
 #include <string>
 
+// getting terminal width
+#include <sys/ioctl.h>
+#include <stdio.h>
+
 #include <unistd.h>
 #include <termios.h>
 
-char getch() {
-        char buf = 0;
-        struct termios old = {0};
-        if (tcgetattr(0, &old) < 0)
-                perror("tcsetattr()");
-        old.c_lflag &= ~ICANON;
-        old.c_lflag &= ~ECHO;
-        old.c_cc[VMIN] = 1;
-        old.c_cc[VTIME] = 0;
-        if (tcsetattr(0, TCSANOW, &old) < 0)
-                perror("tcsetattr ICANON");
-        if (read(0, &buf, 1) < 0)
-                perror ("read()");
-        old.c_lflag |= ICANON;
-        old.c_lflag |= ECHO;
-        if (tcsetattr(0, TCSADRAIN, &old) < 0)
-                perror ("tcsetattr ~ICANON");
-        return (buf);
+char getch()
+{
+  char buf = 0;
+  struct termios old = {0};
+  if (tcgetattr(0, &old) < 0)
+    perror("tcsetattr()");
+  old.c_lflag &= ~ICANON;
+  old.c_lflag &= ~ECHO;
+  old.c_cc[VMIN] = 1;
+  old.c_cc[VTIME] = 0;
+  if (tcsetattr(0, TCSANOW, &old) < 0)
+    perror("tcsetattr ICANON");
+  if (read(0, &buf, 1) < 0)
+    perror("read()");
+  old.c_lflag |= ICANON;
+  old.c_lflag |= ECHO;
+  if (tcsetattr(0, TCSADRAIN, &old) < 0)
+    perror("tcsetattr ~ICANON");
+  return (buf);
 }
 
 const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"};
@@ -34,7 +39,7 @@ const char *months[] = {"January", "February", "March", "April", "May", "June", 
 Calendar::Calendar()
 {
   setlocale(LC_ALL, "");
-  
+
   bool quit = false;
 
   while (!quit)
@@ -148,7 +153,6 @@ void Calendar::updateDisplay()
   }
 
   getHelpView();
-
 }
 
 void Calendar::createEvent(Event &event)
@@ -295,7 +299,10 @@ void Calendar::getEventView(Date &date)
 
 void Calendar::getHelpView()
 {
-  const int COLS = 50;
+  // terminal colums get
+  struct winsize w;
+  ioctl(0, TIOCGWINSZ, &w);
+  const int COLS = w.ws_col;
 
   for (int i = 0; i < COLS; i++)
     printf("-");
