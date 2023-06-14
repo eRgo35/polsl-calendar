@@ -21,8 +21,8 @@ public:
   void updateDisplay();
   void nextDay(Date &date);
   void previousDay(Date &date);
-  void nextWeek();
-  void previousWeek();
+  void nextWeek(Date &date);
+  void previousWeek(Date &date);
   void setDisplayMode(int layout);
   
   void createEvent(Event &event);
@@ -33,7 +33,7 @@ public:
 
   void getMonthView(Date &date);
   void getWeekView(Date &date);
-  void getDayView(Date &date);
+  void getDayView(Date &date, Time &time);
   void getScheduleView(Date &date);
   
   void getEventView(Date &date);

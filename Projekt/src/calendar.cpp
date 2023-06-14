@@ -35,6 +35,10 @@ char getch()
 }
 
 const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"};
+const int KEY_RIGHT = 'C';
+const int KEY_LEFT = 'D';
+const int KEY_UP = 'A';
+const int KEY_DOWN = 'B';
 
 Calendar::Calendar()
 {
@@ -50,22 +54,6 @@ Calendar::Calendar()
 
     switch (input)
     {
-    case 'l':
-      nextDay(today);
-      // KEYRIGHT
-      break;
-    case 'j':
-      previousDay(today);
-      // KEYLEFT
-      break;
-    case 'i':
-      nextWeek();
-      // KEYUP
-      break;
-    case 'k':
-      previousWeek();
-      // KEYDOWN
-      break;
     case 'a':
       setDisplayMode(0);
       break;
@@ -88,15 +76,34 @@ Calendar::Calendar()
       // calendar.deleteEvent();
       break;
     case '\n':
-      // calendar.showEventDetails();
+      setDisplayMode(3);
+      // TODO: Add View Details()
       break;
-    case '=':
-      // calendar.goBack();
-      // BACKSPACE
+    case 'b':
+      setDisplayMode(0);
       break;
     case 'q':
       quit = true;
       break;
+    case '\033':
+      getch();
+      switch (getch())
+      {
+      case KEY_RIGHT:
+        nextDay(today);
+        break;
+      case KEY_LEFT:
+        previousDay(today);
+        break;
+      case KEY_DOWN:
+        nextWeek(today);
+        break;
+      case KEY_UP:
+        previousWeek(today);
+        break;
+      default:
+        break;
+      }
     }
   }
 }
@@ -115,7 +122,7 @@ void Calendar::previousDay(Date &date)
   if (!date.setDay(date.getDay() - 1))
   {
     date.setMonth(date.getMonth() - 1);
-    
+
     if (!date.setDay(31))
       if (!date.setDay(30))
         if (!date.setDay(29))
@@ -123,14 +130,36 @@ void Calendar::previousDay(Date &date)
   }
 }
 
-void Calendar::nextWeek()
+void Calendar::nextWeek(Date &date)
 {
-  // TODO Impl cursor moving (dependant on the set DisplayMode())
+  if (!date.setDay(date.getDay() + 7))
+  {
+    date.setMonth(date.getMonth() + 1);
+    int current_week = date.getWeekDayNumber();
+    for (int i = 1; i < 7; i++)
+    {
+      date.setDay(i);
+      if (date.getWeekDayNumber() == current_week)
+        break;
+    }
+  }
 }
 
-void Calendar::previousWeek()
+void Calendar::previousWeek(Date &date)
 {
-  // TODO Impl cursor moving (dependant on the set DisplayMode())
+  if (!date.setDay(date.getDay() - 7))
+  {
+    date.setMonth(date.getMonth() - 1);
+    int current_week = date.getWeekDayNumber();
+    for (int i = 31; i > 21; i--)
+    {
+      if (!date.setDay(i))
+        continue;
+
+      if (date.getWeekDayNumber() == current_week)
+        break;
+    }
+  }
 }
 
 void Calendar::setDisplayMode(int layout)
@@ -151,7 +180,7 @@ void Calendar::updateDisplay()
     getWeekView(today);
     break;
   case 2:
-    getDayView(today);
+    getDayView(today, now);
     break;
   case 3:
     getScheduleView(today);
@@ -202,6 +231,8 @@ std::vector<Event> Calendar::getEvents(Date &date)
   return events;
 }
 
+// Generally, month switching doens't work on new year's Dec-Jan
+// TODO: Impl setMonth() logic checks & year switching
 void Calendar::getMonthView(Date &date)
 {
   const char *week_placeholder = "Sun Mon Tue Wed Thu Fri Sat";
@@ -215,7 +246,6 @@ void Calendar::getMonthView(Date &date)
 
   printf("%s%s %d\n", spacing.c_str(), months[date.getMonth() - 1], date.getYear());
   printf("%s\n", week_placeholder);
-  // printw("%d\n", date.getWeekNumber());
   Date first_day_of_the_month(1, date.getMonth(), date.getYear());
   int first_day = first_day_of_the_month.getWeekNumber();
   Date last_month(1, date.getMonth() - 1, date.getYear()); // this is borked if it's January
@@ -233,12 +263,16 @@ void Calendar::getMonthView(Date &date)
 
   int day = last_sunday.getDay();
   bool first_iteration = true;
+  bool last_iteration = true;
   for (int i = 0; i < 6; i++)
   {
     for (int j = 0; j < 7; j++)
     {
       if (!first_iteration && !temp_date.setDay(day))
+      {
         day = 1;
+        last_iteration = false;
+      }
 
       if (first_iteration && !last_month.setDay(day))
       {
@@ -246,7 +280,7 @@ void Calendar::getMonthView(Date &date)
         first_iteration = false;
       }
 
-      if (day == date.getDay())
+      if (!first_iteration && last_iteration && day == date.getDay())
         printf("\033[1;44m%3d \033[0m", day);
       else
         printf("%3d ", day);
@@ -259,23 +293,55 @@ void Calendar::getMonthView(Date &date)
 
 void Calendar::getWeekView(Date &date)
 {
-  printf("Week 10 - March 2023\n");
-  printf("Sun  5 | \n");
-  printf("Mon  6 | meeting\n");
-  printf("Tue  7 | \n");
-  printf("Wed  8 | lectures\n");
-  printf("Thu  9 | exam\n");
-  printf("Fri 10 | \n");
-  printf("Sat 11 | \n");
+  int header_length = std::string(months[date.getMonth() - 1]).length() + 12;
+  int required_spaces = (27 - header_length) / 2;
+  std::string spacing = "";
+
+  for (int i = 0; i < required_spaces; i++)
+    spacing += " ";
+  printf("%sWeek %d - %s %d\n", spacing.c_str(), date.getWeekNumber(), months[date.getMonth() - 1], date.getYear());
+
+  Date temp_date = date;
+
+  std::vector<Event> events_today;
+
+  for (Event event : events)
+  {
+    if (event.getStartDate() == date)
+      events_today.push_back(event);
+  }
+
+  for (int i = 0; i < 7; i++)
+  {
+    printf("%s %2d | %s\n", temp_date.getWeekDay().c_str(), temp_date.getDay(), "no events for today");
+    if (!temp_date.setDay(temp_date.getDay() + 1))
+    {
+      temp_date.setDay(1);
+      temp_date.setMonth(temp_date.getMonth() + 1);
+    }
+  }
 }
 
-void Calendar::getDayView(Date &date)
+void Calendar::getDayView(Date &date, Time &time)
 {
-  printf(" 6 AM |             \n");
-  printf(" 7 AM |             \n");
-  printf(" 8 AM | :   exam   :\n");
-  printf(" 9 AM | :          :\n");
-  printf("10 AM | :..........:\n");
+  printf("%s %s %2d %d\n", date.getWeekDay().c_str(), months[date.getMonth() + 1], date.getDay(), date.getYear());
+
+  Time temp_time = time;
+  Date temp_date = date;
+
+  for (int i = 0; i < 7; i++)
+  {
+    printf("%2d:00 | %s\n", temp_time.getHour(), "no events for now");
+    if (!temp_time.setHour(temp_time.getHour() + 1))
+    {
+      temp_time.setHour(0);
+      if (!temp_date.setDay(temp_date.getDay() + 1))
+      {
+        temp_date.setDay(1);
+        temp_date.setMonth(temp_date.getMonth() + 1);
+      }
+    }
+  }
 }
 
 void Calendar::getScheduleView(Date &date)
@@ -339,7 +405,7 @@ void Calendar::getHelpView()
   printf("e - edit selected event  ");
   printf("x - delete selected event\n");
   printf("Enter - show details    ");
-  printf("Backspace - go back      ");
+  printf("b - go back              ");
   printf("q - quit\n");
 }
 
