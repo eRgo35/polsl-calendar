@@ -2,6 +2,7 @@
 #include "../include/date.h"
 #include "../include/time.h"
 #include "../include/color.h"
+#include "../include/form.h"
 
 #include <locale.h>
 #include <string>
@@ -380,6 +381,23 @@ void Calendar::getScheduleView(Date &date)
 void Calendar::getEventView(Date &date)
 {
   printf("Create new event\n\n");
+
+  std::string str = "";
+  Date today;
+  Time now;
+  Color color;
+  Event event(str, today, now, today, now, color, str);
+
+  Form::createDialogBox(event);
+  // while (std::cin >> choice);
+
+  // char choice;
+  // printf("Apply? [Y/n]\n");
+    
+
+  //   if (choice == 'Y' || choice == 'y' || choice == '\n')
+  //     break;
+
 }
 
 void Calendar::getHelpView()
