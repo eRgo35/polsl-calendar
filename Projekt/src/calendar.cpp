@@ -3,6 +3,7 @@
 #include "../include/time.h"
 #include "../include/color.h"
 #include "../include/form.h"
+#include "../include/file.h"
 
 #include <locale.h>
 #include <string>
@@ -47,6 +48,9 @@ const int KEY_DOWN = 'B';
 Calendar::Calendar()
 {
   setlocale(LC_ALL, "");
+
+  File file("events.txt");
+  file.readEvents(events);
 
   bool quit = false;
 
@@ -109,6 +113,8 @@ Calendar::Calendar()
       }
     }
   }
+
+  file.writeEvents(events);
 }
 
 void Calendar::nextDay(Date &date)
@@ -303,20 +309,19 @@ void Calendar::getMonthView(Date &date)
         std::cout << "\033[1;44m" << std::setw(3) << day << " "
                   << "\033[0m";
       }
-      // else if (events.size() > 0)
-      // {
-      //   for (int i = 0; i < events.size(); i++)
-      //   {
-      //     if (events[i].getStartDate().getMonth() == date.getMonth() && events[i].getStartDate().getYear() == date.getYear())
-      //     {
-      //       if (events[i].getStartDate().getDay() == day)
-      //       {
-      //         std::cout << "\033[1;43m" << std::setw(3) << day << " "
-      //                   << "\033[0m";
-      //       }
-      //     }
-      //   }
-      // }
+      else if (events.size() > 0)
+      {
+        for (auto event : events)
+        {
+          if (event.getStartDate().getMonth() == date.getMonth() && event.getStartDate().getYear() == date.getYear() && event.getStartDate().getDay() == day)
+            std::cout << "\033[1;43m" << std::setw(3) << day << " "
+                      << "\033[0m";
+          else
+          {
+            std::cout << std::setw(3) << day << " ";
+          }
+        }
+      }
       else
       {
         std::cout << std::setw(3) << day << " ";

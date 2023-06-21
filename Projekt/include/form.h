@@ -1,7 +1,7 @@
 #ifndef FORM_H
 #define FORM_H
 
-#include "../include/event.h"
+#include "event.h"
 
 class Form
 {
