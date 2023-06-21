@@ -14,6 +14,7 @@ private:
   Date today;
   Time now;
   int current_layout = 0;
+  int previousDisplayMode = 0;
 
 public:
   Calendar();
@@ -36,7 +37,11 @@ public:
   void getDayView(Date &date, Time &time);
   void getScheduleView(Date &date);
   
-  void getEventView(Date &date);
+  void createEventView(Date &date);
+  void editEventView(Date &date);
+  void deleteEventView(Date &date);
+
+  void getSelectedEvent(Date &date);
 
   void getHelpView();
   

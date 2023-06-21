@@ -71,6 +71,7 @@
     "format": "cpp",
     "span": "cpp",
     "codecvt": "cpp",
-    "stdfloat": "cpp"
+    "stdfloat": "cpp",
+    "regex": "cpp"
   }
 }

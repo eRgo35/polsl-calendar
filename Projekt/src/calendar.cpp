@@ -7,6 +7,9 @@
 #include <locale.h>
 #include <string>
 
+#include <iostream>
+#include <iomanip>
+
 // getting terminal width
 #include <sys/ioctl.h>
 #include <stdio.h>
@@ -71,17 +74,16 @@ Calendar::Calendar()
       setDisplayMode(4);
       break;
     case 'e':
-      // calendar.editEvent();
+      setDisplayMode(5);
       break;
     case 'x':
-      // calendar.deleteEvent();
+      setDisplayMode(6);
       break;
     case '\n':
-      setDisplayMode(3);
-      // TODO: Add View Details()
+      setDisplayMode(7);
       break;
     case 'b':
-      setDisplayMode(0);
+      setDisplayMode(previousDisplayMode);
       break;
     case 'q':
       quit = true;
@@ -165,6 +167,7 @@ void Calendar::previousWeek(Date &date)
 
 void Calendar::setDisplayMode(int layout)
 {
+  previousDisplayMode = current_layout;
   current_layout = layout;
 }
 
@@ -176,25 +179,37 @@ void Calendar::updateDisplay()
   {
   case 0:
     getMonthView(today);
+    getHelpView();
     break;
   case 1:
     getWeekView(today);
+    getHelpView();
     break;
   case 2:
     getDayView(today, now);
+    getHelpView();
     break;
   case 3:
     getScheduleView(today);
+    getHelpView();
     break;
   case 4:
-    getEventView(today);
+    createEventView(today);
+    break;
+  case 5:
+    editEventView(today);
+    break;
+  case 6:
+    deleteEventView(today);
+    break;
+  case 7:
+    getSelectedEvent(today);
+    getHelpView();
     break;
   default:
     getScheduleView(today);
     break;
   }
-
-  getHelpView();
 }
 
 void Calendar::createEvent(Event &event)
@@ -240,13 +255,13 @@ void Calendar::getMonthView(Date &date)
 
   int header_length = std::string(months[date.getMonth() - 1]).length() + 5;
   int required_spaces = (27 - header_length) / 2;
-  std::string spacing = "";
+  std::string spacing;
 
   for (int i = 0; i < required_spaces; i++)
     spacing += " ";
 
-  printf("%s%s %d\n", spacing.c_str(), months[date.getMonth() - 1], date.getYear());
-  printf("%s\n", week_placeholder);
+  std::cout << spacing << months[date.getMonth() - 1] << " " << date.getYear() << std::endl;
+  std::cout << week_placeholder << std::endl;
   Date first_day_of_the_month(1, date.getMonth(), date.getYear());
   int first_day = first_day_of_the_month.getWeekNumber();
   Date last_month(1, date.getMonth() - 1, date.getYear()); // this is borked if it's January
@@ -261,6 +276,8 @@ void Calendar::getMonthView(Date &date)
   }
 
   Date temp_date(date);
+
+  std::vector<Event> events_this_month;
 
   int day = last_sunday.getDay();
   bool first_iteration = true;
@@ -282,13 +299,32 @@ void Calendar::getMonthView(Date &date)
       }
 
       if (!first_iteration && last_iteration && day == date.getDay())
-        printf("\033[1;44m%3d \033[0m", day);
+      {
+        std::cout << "\033[1;44m" << std::setw(3) << day << " "
+                  << "\033[0m";
+      }
+      // else if (events.size() > 0)
+      // {
+      //   for (int i = 0; i < events.size(); i++)
+      //   {
+      //     if (events[i].getStartDate().getMonth() == date.getMonth() && events[i].getStartDate().getYear() == date.getYear())
+      //     {
+      //       if (events[i].getStartDate().getDay() == day)
+      //       {
+      //         std::cout << "\033[1;43m" << std::setw(3) << day << " "
+      //                   << "\033[0m";
+      //       }
+      //     }
+      //   }
+      // }
       else
-        printf("%3d ", day);
+      {
+        std::cout << std::setw(3) << day << " ";
+      }
 
       day++;
     }
-    printf("\n");
+    std::cout << std::endl;
   }
 }
 
@@ -300,7 +336,8 @@ void Calendar::getWeekView(Date &date)
 
   for (int i = 0; i < required_spaces; i++)
     spacing += " ";
-  printf("%sWeek %d - %s %d\n", spacing.c_str(), date.getWeekNumber(), months[date.getMonth() - 1], date.getYear());
+
+  std::cout << spacing << "Week " << date.getWeekNumber() << " - " << months[date.getMonth() - 1] << " " << date.getYear() << std::endl;
 
   Date temp_date = date;
 
@@ -314,7 +351,8 @@ void Calendar::getWeekView(Date &date)
 
   for (int i = 0; i < 7; i++)
   {
-    printf("%s %2d | %s\n", temp_date.getWeekDay().c_str(), temp_date.getDay(), "no events for today");
+    std::cout << temp_date.getWeekDay() << " " << std::setw(2) << temp_date.getDay() << " | "
+              << "no events for today" << std::endl;
     if (!temp_date.setDay(temp_date.getDay() + 1))
     {
       temp_date.setDay(1);
@@ -325,14 +363,15 @@ void Calendar::getWeekView(Date &date)
 
 void Calendar::getDayView(Date &date, Time &time)
 {
-  printf("%s %s %2d %d\n", date.getWeekDay().c_str(), months[date.getMonth() + 1], date.getDay(), date.getYear());
+  std::cout << date.getWeekDay() << " " << months[date.getMonth() + 1] << " " << date.getDay() << " " << date.getYear() << std::endl;
 
   Time temp_time = time;
   Date temp_date = date;
 
   for (int i = 0; i < 7; i++)
   {
-    printf("%2d:00 | %s\n", temp_time.getHour(), "no events for now");
+    std::cout << std::setw(2) << temp_time.getHour() << ":00 | "
+              << "no events for now" << std::endl;
     if (!temp_time.setHour(temp_time.getHour() + 1))
     {
       temp_time.setHour(0);
@@ -348,39 +387,44 @@ void Calendar::getDayView(Date &date, Time &time)
 void Calendar::getScheduleView(Date &date)
 {
   std::vector<Event> events_today;
+  std::vector<Event> events_upcoming;
 
   for (Event event : events)
   {
     if (event.getStartDate() == date)
       events_today.push_back(event);
+
+    if (event.getStartDate() > date)
+      events_upcoming.push_back(event);
   }
 
   if (events_today.empty())
   {
-    printf("%s %s %d  | no events for today\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay());
+    std::cout << date.getWeekDay() << " " << months[date.getMonth() - 1] << " " << date.getDay() << " | no events for today" << std::endl;
   }
   else if (events_today.size() == 1)
   {
-    printf("%s %s %d  | %s\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay(), events[0].getName());
+    std::cout << date.getWeekDay() << " " << months[date.getMonth() - 1] << " " << date.getDay() << " | " << events[0].getName() << std::endl;
   }
   else
   {
-    printf("%s %s %d  | %s and %d more...\n", date.getWeekDay().c_str(), months[date.getMonth() - 1], date.getDay(), events[0].getName(), events_today.size() - 1);
+    std::cout << date.getWeekDay() << " " << months[date.getMonth() - 1] << " " << date.getDay() << " | " << events[0].getName() << " and " << (events_today.size() - 1) << " more..." << std::endl;
   }
 
-  int max_schedule_length = (events.size() <= 6) ? events.size() : 6;
+  int max_schedule_length = (events_upcoming.size() <= 6) ? events_upcoming.size() : 6;
 
   for (int i = 0; i < max_schedule_length; i++)
   {
-    Event event = events[i];
+    Event event = events_upcoming[i];
 
-    printf("%s %s %d  | %s\n", event.getStartDate().getWeekDay().c_str(), months[event.getStartDate().getMonth() - 1], event.getStartDate().getDay(), event.getName().c_str());
+    std::cout << event.getStartDate().getWeekDay() << " " << months[event.getStartDate().getMonth() - 1] << " " << event.getStartDate().getDay() << " | " << event.getName() << std::endl;
   }
 }
 
-void Calendar::getEventView(Date &date)
+void Calendar::createEventView(Date &date)
 {
-  printf("Create new event\n\n");
+  std::cout << "Create new event" << std::endl
+            << std::endl;
 
   std::string str = "";
   Date today;
@@ -389,15 +433,90 @@ void Calendar::getEventView(Date &date)
   Event event(str, today, now, today, now, color, str);
 
   Form::createDialogBox(event);
-  // while (std::cin >> choice);
 
-  // char choice;
-  // printf("Apply? [Y/n]\n");
-    
+  events.push_back(event);
 
-  //   if (choice == 'Y' || choice == 'y' || choice == '\n')
-  //     break;
+  setDisplayMode(0);
+  updateDisplay();
+}
 
+void Calendar::editEventView(Date &date)
+{
+  std::cout << "Edit an existing event" << std::endl
+            << std::endl;
+
+  std::string event_id;
+
+  getSelectedEvent(date);
+
+  std::cout << "Provide event id: ";
+  std::getline(std::cin, event_id);
+
+  try
+  {
+    Form::createDialogBox(events[std::stoi(event_id) - 1]);
+  }
+  catch (std::exception &e)
+  {
+  }
+
+  setDisplayMode(0);
+  updateDisplay();
+}
+
+void Calendar::deleteEventView(Date &date)
+{
+  std::cout << "Remove an existing event" << std::endl
+            << std::endl;
+
+  int event_id;
+
+  getSelectedEvent(date);
+
+  try
+  {
+    std::cout << "Provide event id: ";
+    std::cin >> event_id;
+  }
+  catch (std::exception &e)
+  {
+  }
+
+  events.erase(events.begin() + event_id - 1);
+
+  setDisplayMode(0);
+  updateDisplay();
+}
+
+void Calendar::getSelectedEvent(Date &date)
+{
+  std::cout << "Event details: " << std::endl;
+  int temp_id = 1;
+
+  for (auto event : events)
+  {
+    auto sDate = event.getStartDate();
+    auto sTime = event.getStartTime();
+    auto eDate = event.getEndDate();
+    auto eTime = event.getEndTime();
+
+    auto color = event.getColor();
+    std::stringstream color_stream;
+    color_stream << std::hex << (color.getRed() << 16 | color.getGreen() << 8 | color.getBlue());
+
+    std::cout << temp_id << ") " << std::endl
+              << "Name: " << event.getName() << std::endl
+              << "Starts: " << sDate.getMonth() << "/" << std::setfill('0') << std::setw(2) << sDate.getDay() << "/" << sDate.getYear() << " "
+              << std::setw(2) << sTime.getHour() << ":" << std::setfill('0') << std::setw(2) << sTime.getMinute() << std::endl
+              << "Ends: " << eDate.getMonth() << "/" << std::setfill('0') << std::setw(2) << eDate.getDay() << "/" << eDate.getYear() << " "
+              << std::setw(2) << eTime.getHour() << ":" << std::setfill('0') << std::setw(2) << eTime.getMinute() << std::endl
+              << "Color: #" << color_stream.str() << std::endl
+              << "Notes: " << event.getNotes() << std::endl
+              << std::endl
+              << std::setfill(' ');
+
+    temp_id++;
+  }
 }
 
 void Calendar::getHelpView()
@@ -407,24 +526,26 @@ void Calendar::getHelpView()
   ioctl(0, TIOCGWINSZ, &w);
   const int COLS = w.ws_col;
 
-  for (int i = 0; i < COLS; i++)
-    printf("-");
-  printf("\n");
+  std::cout << std::string(COLS, '-') << std::endl;
 
-  printf("→ - next day            ");
-  printf("← - previous day         ");
-  printf("↑ - next week              ");
-  printf("↓ - previous week\n");
-  printf("a - month view          ");
-  printf("w - week view            ");
-  printf("d - day view               ");
-  printf("s - schedule view\n");
-  printf("c - create a new event  ");
-  printf("e - edit selected event  ");
-  printf("x - delete selected event\n");
-  printf("Enter - show details    ");
-  printf("b - go back              ");
-  printf("q - quit\n");
+  std::cout << "→ - next day            "
+            << "← - previous day         "
+            << "↑ - next week              "
+            << "↓ - previous week"
+            << std::endl
+            << "a - month view          "
+            << "w - week view            "
+            << "d - day view               "
+            << "s - schedule view"
+            << std::endl
+            << "c - create a new event  "
+            << "e - edit selected event  "
+            << "x - delete selected event"
+            << std::endl
+            << "Enter - show details    "
+            << "b - go back              "
+            << "q - quit"
+            << std::endl;
 }
 
 int Calendar::days_in_month(Date &date)
