@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 // getting terminal width
 #include <sys/ioctl.h>
@@ -17,6 +18,8 @@
 
 #include <unistd.h>
 #include <termios.h>
+
+#include <fstream>
 
 char getch()
 {
@@ -39,6 +42,21 @@ char getch()
   return (buf);
 }
 
+bool day_exists(std::vector<Event> &events, int &day, std::string &color)
+{
+  for (auto event : events)
+  {
+    if (event.getStartDate().getDay() == day)
+    {
+      // TODO: Remap rgb colors into term colors
+      // color = event.getColor();
+      return true;
+    }
+  }
+
+  return false;
+}
+
 const char *months[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December"};
 const int KEY_RIGHT = 'C';
 const int KEY_LEFT = 'D';
@@ -49,8 +67,7 @@ Calendar::Calendar()
 {
   setlocale(LC_ALL, "");
 
-  File file("events.txt");
-  file.readEvents(events);
+  File::readEvents(events);
 
   bool quit = false;
 
@@ -114,7 +131,7 @@ Calendar::Calendar()
     }
   }
 
-  file.writeEvents(events);
+  File::writeEvents(events);
 }
 
 void Calendar::nextDay(Date &date)
@@ -285,6 +302,12 @@ void Calendar::getMonthView(Date &date)
 
   std::vector<Event> events_this_month;
 
+  for (auto event : events)
+  {
+    if (event.getStartDate().getMonth() == first_day_of_the_month.getMonth())
+      events_this_month.push_back(event);
+  }
+
   int day = last_sunday.getDay();
   bool first_iteration = true;
   bool last_iteration = true;
@@ -304,23 +327,16 @@ void Calendar::getMonthView(Date &date)
         first_iteration = false;
       }
 
-      if (!first_iteration && last_iteration && day == date.getDay())
+      std::string color = "\033[1;103m";
+      if (!first_iteration && last_iteration && day_exists(events_this_month, day, color) && day != date.getDay())
+      {
+        std::cout << color << std::setw(3) << day << " "
+                  << "\033[0m";
+      }
+      else if (!first_iteration && last_iteration && day == date.getDay())
       {
         std::cout << "\033[1;44m" << std::setw(3) << day << " "
                   << "\033[0m";
-      }
-      else if (events.size() > 0)
-      {
-        for (auto event : events)
-        {
-          if (event.getStartDate().getMonth() == date.getMonth() && event.getStartDate().getYear() == date.getYear() && event.getStartDate().getDay() == day)
-            std::cout << "\033[1;43m" << std::setw(3) << day << " "
-                      << "\033[0m";
-          else
-          {
-            std::cout << std::setw(3) << day << " ";
-          }
-        }
       }
       else
       {
@@ -333,6 +349,7 @@ void Calendar::getMonthView(Date &date)
   }
 }
 
+// TODO: Finish week view impl
 void Calendar::getWeekView(Date &date)
 {
   int header_length = std::string(months[date.getMonth() - 1]).length() + 12;
@@ -348,24 +365,38 @@ void Calendar::getWeekView(Date &date)
 
   std::vector<Event> events_today;
 
-  for (Event event : events)
-  {
-    if (event.getStartDate() == date)
-      events_today.push_back(event);
-  }
-
   for (int i = 0; i < 7; i++)
   {
-    std::cout << temp_date.getWeekDay() << " " << std::setw(2) << temp_date.getDay() << " | "
-              << "no events for today" << std::endl;
+    for (Event event : events)
+    {
+      if (event.getStartDate() == temp_date)
+        events_today.push_back(event);
+    }
+
+    if (events_today.empty())
+    {
+      std::cout << temp_date.getWeekDay() << " " << std::setw(2) << temp_date.getDay() << " | no events for today" << std::endl;
+    }
+    else if (events_today.size() == 1)
+    {
+      std::cout << temp_date.getWeekDay() << " " << std::setw(2) << temp_date.getDay() << " | " << events[0].getName() << std::endl;
+    }
+    else
+    {
+      std::cout << temp_date.getWeekDay() << " " << std::setw(2) << temp_date.getDay() << " | " << events[0].getName() << " and " << (events_today.size() - 1) << " more..." << std::endl;
+    }
+
     if (!temp_date.setDay(temp_date.getDay() + 1))
     {
       temp_date.setDay(1);
       temp_date.setMonth(temp_date.getMonth() + 1);
     }
+
+    events_today.clear();
   }
 }
 
+// TODO: Hour by hour day implementation
 void Calendar::getDayView(Date &date, Time &time)
 {
   std::cout << date.getWeekDay() << " " << months[date.getMonth() + 1] << " " << date.getDay() << " " << date.getYear() << std::endl;

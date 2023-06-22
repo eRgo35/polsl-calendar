@@ -8,15 +8,9 @@
 
 class File
 {
-private:
-  std::fstream file;
-
 public:
-  File(std::string path);
-  ~File();
-
-  bool readEvents(std::vector<Event> &events);
-  bool writeEvents(std::vector<Event> &events);
+  static bool readEvents(std::vector<Event> &events);
+  static bool writeEvents(std::vector<Event> &events);
 };
 
 #endif
