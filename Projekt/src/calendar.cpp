@@ -48,8 +48,7 @@ bool day_exists(std::vector<Event> &events, int &day, std::string &color)
   {
     if (event.getStartDate().getDay() == day)
     {
-      // TODO: Remap rgb colors into term colors
-      // color = event.getColor();
+      color = Color::getTerminalColor(event.getColor());
       return true;
     }
   }

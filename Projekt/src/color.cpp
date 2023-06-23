@@ -1,33 +1,52 @@
 #include <iostream>
+#include <vector>
 #include <iomanip>
+#include <cmath>
 #include <string>
 #include <sstream>
 #include <map>
 
 #include "../include/color.h"
 
-std::string RED = "\033[1;31m";
-std::string ORANGE = "\033[1;33m";
-std::string GREEN = "\033[1;32m";
-std::string BLUE = "\033[1;34m";
-std::string WHITE = "\033[1;37m";
-std::string CYAN = "\033[1;36m";
-std::string MAGENTA = "\033[1;35m";
-std::string YELLOW = "\033[1;93m";
-std::string PURPLE = "\033[1;95m";
-std::string GRAY = "\033[1;90m";
-std::string CLEAR = "\033[0m";
+// for reference: https://en.wikipedia.org/wiki/ANSI_escape_code
+std::vector<std::pair<std::string, Color>> generateColors()
+{
+  int r, g, b = 0;
+  std::vector<int> color_range = {0, 95, 135, 175, 215, 255};
+  int r_range = 0, g_range = 0, b_range = 0;
 
-std::string RED_BG = "\033[1;41m";
-std::string ORANGE_BG = "\033[1;43m";
-std::string GREEN_BG = "\033[1;42m";
-std::string BLUE_BG = "\033[1;44m";
-std::string WHITE_BG = "\033[1;47m";
-std::string CYAN_BG = "\033[1;46m";
-std::string MAGENTA_BG = "\033[1;45m";
-std::string YELLOW_BG = "\033[1;103m";
-std::string PURPLE_BG = "\033[1;105m";
-std::string GRAY_BG = "\033[1;100m";
+  std::vector<std::pair<std::string, Color>> colors;
+  for (int i = 16; i < 232; i++)
+  {
+    std::string code = "\033[48;5;" + std::to_string(i) + "m";
+    Color color(r, g, b);
+
+    colors.push_back({code, color});
+
+    b_range++;
+    if (b_range >= color_range.size())
+    {
+      b_range = 0;
+      g_range++;
+      if (g_range >= color_range.size())
+      {
+        g_range = 0;
+        r_range++;
+        if (r_range >= color_range.size())
+        {
+          r_range = 0;
+        }
+      }
+    }
+
+    b = color_range[b_range];
+    g = color_range[g_range];
+    r = color_range[r_range];
+  }
+  return colors;
+}
+
+const std::vector<std::pair<std::string, Color>> colors = generateColors();
 
 Color::Color()
 {
@@ -117,6 +136,27 @@ std::string Color::toString()
   stream << std::hex << red << std::hex << green << std::hex << blue;
 
   return ("#" + stream.str());
+}
+
+std::string Color::getTerminalColor(Color color)
+{
+  std::map<double, std::string> distance_array;
+
+  for (auto term_color : colors)
+  {
+    double r = term_color.second.getRed() - color.getRed();
+    double g = term_color.second.getGreen() - color.getGreen();
+    double b = term_color.second.getBlue() - color.getBlue();
+
+    double length = sqrt(r * r + g * g + b * b);
+
+    distance_array.insert({length, term_color.first});
+  }
+
+  if (distance_array.empty())
+    return "";
+
+  return distance_array.begin()->second;
 }
 
 bool Color::operator==(const Color &other) const

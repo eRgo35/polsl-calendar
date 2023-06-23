@@ -26,6 +26,7 @@ public:
   bool setBlue(int blue);
 
   std::string toString();
+  static std::string getTerminalColor(Color color);
 
   bool operator==(const Color &other) const;
   bool operator!=(const Color &other) const;
