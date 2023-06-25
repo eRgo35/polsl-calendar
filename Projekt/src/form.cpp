@@ -58,6 +58,7 @@ bool Form::createDialogBox(Event &event)
   }
   catch (std::exception &e)
   {
+    std::cerr << e.what();
   }
 
   try
@@ -86,6 +87,7 @@ bool Form::createDialogBox(Event &event)
   }
   catch (std::exception &e)
   {
+    std::cerr << e.what();
   }
 
   try
@@ -104,6 +106,7 @@ bool Form::createDialogBox(Event &event)
   }
   catch (std::exception &e)
   {
+    std::cerr << e.what();
   }
 
   return true;

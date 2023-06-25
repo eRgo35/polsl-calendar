@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 
-bool File::readEvents(std::vector<Event> &events)
+bool File::readEvents(std::vector<Event> &events, std::string events_path)
 {
   std::ifstream file("events.txt");
 
@@ -39,7 +39,7 @@ bool File::readEvents(std::vector<Event> &events)
   return true;
 }
 
-bool File::writeEvents(std::vector<Event> &events)
+bool File::writeEvents(std::vector<Event> &events, std::string events_path)
 {
   std::ofstream file("events.txt");
 

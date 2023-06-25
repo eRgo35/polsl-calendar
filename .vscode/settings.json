@@ -73,5 +73,6 @@
     "codecvt": "cpp",
     "stdfloat": "cpp",
     "regex": "cpp"
-  }
+  },
+  "cmake.configureOnOpen": false
 }

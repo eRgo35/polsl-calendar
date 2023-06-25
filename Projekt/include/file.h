@@ -9,8 +9,8 @@
 class File
 {
 public:
-  static bool readEvents(std::vector<Event> &events);
-  static bool writeEvents(std::vector<Event> &events);
+  static bool readEvents(std::vector<Event> &events, std::string events_path);
+  static bool writeEvents(std::vector<Event> &events, std::string events_path);
 };
 
 #endif

@@ -19,10 +19,14 @@ int handle_arguments(int argc, char *argv[])
       std::cout << "Calendar with event support. \nDeveloped by Michał Czyż. \nCopyright(c) 2023 All Rights Reserved." << std::endl;
       return 2;
     }
+    else if (std::strcmp(argv[i], "--events-path") == 0)
+    {
+      return 3;
+    }
     else
     {
       std::cerr << "Error: Unknown argument " << argv[i] << std::endl;
-      return 3;
+      return 4;
     }
   }
 
