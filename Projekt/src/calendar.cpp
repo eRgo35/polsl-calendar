@@ -530,16 +530,16 @@ void Calendar::deleteEventView(Date &date)
   std::cout << "Remove an existing event" << std::endl
             << std::endl;
 
-  int event_id;
+  std::string event_id;
 
   getSelectedEvent(date);
 
   try
   {
     std::cout << "Provide event id: ";
-    std::cin >> event_id;
+    std::getline(std::cin, event_id);
 
-    events.erase(events.begin() + event_id - 1);
+    events.erase(events.begin() + std::stoi(event_id) - 1);
   }
   catch (std::exception &e)
   {

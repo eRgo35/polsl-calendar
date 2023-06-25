@@ -7,25 +7,18 @@
 
 int main(int argc, char *argv[])
 {
-  int app_mode = handle_arguments(argc, argv);
   std::string events_path = "events.txt";
+  int app_mode = handle_arguments(argc, argv, events_path);
 
   // invalid arguments error
   if (app_mode > 3)
     return 1;
-  
-  // custom events path
-  if (app_mode == 3)
-  {
-    try {
-      events_path = argv[2];
-    }
-    catch(std::exception e)
-    {
-      std::cerr << e.what();
-      events_path = "events.txt";
-    }
-  }
+
+  // if (app_mode == 3)
+  // {
+  //   std::cout << "Events path: " << events_path << std::endl;
+  //   return 0;
+  // }
 
   // --version // prints current version
   if (app_mode == 2)

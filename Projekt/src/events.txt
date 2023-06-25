@@ -1,5 +1,0 @@
-Kolokwium z amialu;8;6;2023;10;0;8;6;2023;11;0;74;2;5;aaaaaaaaaaaaaa
-Nastka & Miszka;16;6;2023;9;0;16;6;2023;17;0;154;152;220;Bardzo fajny dzień
-Żółte jak słońce;19;6;2023;12;0;19;6;2023;13;0;255;235;59;oślepiające słońce
-Matematyka;25;6;2023;12;0;25;6;2023;14;0;170;0;0;alalalaa
-Fizyka;8;6;2023;9;0;8;6;2023;10;0;0;0;255;lllllaaaddd

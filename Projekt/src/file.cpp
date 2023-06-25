@@ -7,7 +7,7 @@
 
 bool File::readEvents(std::vector<Event> &events, std::string events_path)
 {
-  std::ifstream file("events.txt");
+  std::ifstream file(events_path);
 
   if (!file.is_open())
     return false;
@@ -41,7 +41,7 @@ bool File::readEvents(std::vector<Event> &events, std::string events_path)
 
 bool File::writeEvents(std::vector<Event> &events, std::string events_path)
 {
-  std::ofstream file("events.txt");
+  std::ofstream file(events_path);
 
   for (auto event : events)
   {

@@ -4,7 +4,7 @@
 
 #include "../include/arguments.h"
 
-int handle_arguments(int argc, char *argv[])
+int handle_arguments(int argc, char *argv[], std::string &events_path)
 {
   bool test_mode = false;
 
@@ -21,6 +21,17 @@ int handle_arguments(int argc, char *argv[])
     }
     else if (std::strcmp(argv[i], "--events-path") == 0)
     {
+      if (i + 1 < argc)
+      {
+        events_path = argv[i + 1];
+        i++;
+      }
+      else
+      {
+        std::cerr << "Error: Missing argument for --events-path" << std::endl;
+        return 4;
+      }
+
       return 3;
     }
     else
