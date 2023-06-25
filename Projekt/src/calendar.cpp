@@ -128,6 +128,7 @@ Calendar::Calendar(std::string events_path)
     }
   }
 
+  // save all modified events into file
   File::writeEvents(events, events_path);
 }
 
@@ -202,8 +203,10 @@ void Calendar::setDisplayMode(DisplayMode layout)
 
 void Calendar::updateDisplay()
 {
+  // clears a screen so a new window can be drawn
   std::system("clear");
 
+  // detects the currently selected layout
   switch (current_layout)
   {
   case MONTH_VIEW:
@@ -262,8 +265,10 @@ bool Calendar::day_exists(std::vector<Event> &events, int &day, std::string &col
 
 void Calendar::getMonthView(Date &date)
 {
+  // holds a placeholder of weeks
   const char *week_placeholder = "Sun Mon Tue Wed Thu Fri Sat";
 
+  // centers a month name header
   int header_length = std::string(months[date.getMonth() - 1]).length() + 5;
   int required_spaces = (27 - header_length) / 2;
   std::string spacing;
@@ -271,12 +276,22 @@ void Calendar::getMonthView(Date &date)
   for (int i = 0; i < required_spaces; i++)
     spacing += " ";
 
+  // Prints out the header with calculated spaces
   std::cout << spacing << months[date.getMonth() - 1] << " " << date.getYear() << std::endl;
+  
+  // Prints out the week placeholder
   std::cout << week_placeholder << std::endl;
+
+  // Gets the first day of the month for the provided date
   Date first_day_of_the_month(1, date.getMonth(), date.getYear());
+
+  // Gets the day of the week on the fist day of the month
   int first_day = first_day_of_the_month.getWeekNumber();
+
+  // Gets the first day of the previous month
   Date last_month(1, date.getMonth() - 1, date.getYear()); // this is borked if it's January
 
+  // Object that will hold the last sunday of the month (for drawing)
   Date last_sunday = last_month;
   for (int i = 1; i <= days_in_month(last_month); i++)
   {
@@ -286,37 +301,52 @@ void Calendar::getMonthView(Date &date)
     last_month.setDay(i);
   }
 
+  // Temporary date used for drawing numbers (to not mess up the provided date)
   Date temp_date(date);
 
+  // A vector that holds all events that occur this month
   std::vector<Event> events_this_month;
 
+  // Find all events this month
   for (auto event : events)
   {
     if (event.getStartDate().getMonth() == first_day_of_the_month.getMonth())
       events_this_month.push_back(event);
   }
 
+  // Get a day number of the last sunday of the previous month
   int day = last_sunday.getDay();
+
+  // Bools responsible for checking if events can be drawn onto the grid
   bool first_iteration = true;
   bool last_iteration = true;
+
+  // Calendar drawing loop
   for (int i = 0; i < 6; i++)
   {
     for (int j = 0; j < 7; j++)
     {
+      // If current month number goes out-of-bounds reset to 1
       if (!first_iteration && !temp_date.setDay(day))
       {
         day = 1;
         last_iteration = false;
       }
 
+      // If previous month number goes out-of-bounds reset to 1
       if (first_iteration && !last_month.setDay(day))
       {
         day = 1;
         first_iteration = false;
       }
 
+      // Fallback color declaration
       std::string color = "\033[1;103m";
+
+      // Check if today's drawn day has an event that day
       bool isEventToday = Calendar::day_exists(events_this_month, day, color);
+      
+      // Color drawing for events, selected day and generally for other days
       if (!first_iteration && last_iteration && isEventToday && day != date.getDay())
       {
         std::cout << color << std::setw(3) << day << " "
@@ -332,6 +362,7 @@ void Calendar::getMonthView(Date &date)
         std::cout << std::setw(3) << day << " ";
       }
 
+      // day number incrementation
       day++;
     }
     std::cout << std::endl;
@@ -340,6 +371,7 @@ void Calendar::getMonthView(Date &date)
 
 void Calendar::getWeekView(Date &date)
 {
+  // Center the week header
   int header_length = std::string(months[date.getMonth() - 1]).length() + 12;
   int required_spaces = (27 - header_length) / 2;
   std::string spacing = "";
@@ -347,22 +379,27 @@ void Calendar::getWeekView(Date &date)
   for (int i = 0; i < required_spaces; i++)
     spacing += " ";
 
+  // Display week header
   std::cout << spacing << "Week " << date.getWeekNumber() << " - " << months[date.getMonth() - 1] << " " << date.getYear() << std::endl;
 
   Date temp_date = date;
 
+  // for all days in a week display events that week
   for (int i = 0; i < 7; i++)
   {
     std::list<Event> events_today;
 
+    // find all events occuring that day
     for (Event event : events)
     {
       if (event.getStartDate() == temp_date)
         events_today.push_back(event);
     }
 
+    // print out the styling
     std::cout << temp_date.getWeekDay() << " " << std::setw(2) << temp_date.getDay() << " | ";
 
+    // event information based on the size of the vector
     if (events_today.empty())
     {
       std::cout << "no events for today" << std::endl;
@@ -376,12 +413,14 @@ void Calendar::getWeekView(Date &date)
       std::cout << events_today.front().getName() << " and " << (events_today.size() - 1) << " more..." << std::endl;
     }
 
+    // if the days in the month gets out of bounds, switch to the next month
     if (!temp_date.setDay(temp_date.getDay() + 1))
     {
       temp_date.setDay(1);
       temp_date.setMonth(temp_date.getMonth() + 1);
     }
 
+    // clean up the vector, so the event won't duplicate
     events_today.clear();
   }
 }
@@ -390,6 +429,7 @@ void Calendar::getDayView(Date &date, Time &time)
 {
   std::cout << date.getWeekDay() << " " << months[date.getMonth() + 1] << " " << date.getDay() << " " << date.getYear() << std::endl;
   
+  // Reset time to 00:00, to show entire 24h spectrum
   Time temp_time(0, 0);
   Date temp_date = date;
 
@@ -405,6 +445,7 @@ void Calendar::getDayView(Date &date, Time &time)
 
     bool event_found = false;
 
+    // checks if event has been found on that hour, so the event can duplicate to show its length
     for (auto event : events_today)
     {
       if (!(event.getStartTime() > temp_time) && event.getEndTime() > temp_time)
@@ -419,6 +460,7 @@ void Calendar::getDayView(Date &date, Time &time)
       std::cout << "no events for now" << std::endl;
     }
 
+    // incrementation of the temporary date
     if (!temp_time.setHour(temp_time.getHour() + 1))
     {
       temp_time.setHour(0);
@@ -434,6 +476,8 @@ void Calendar::getDayView(Date &date, Time &time)
 void Calendar::getScheduleView(Date &date)
 {
   std::vector<Event> events_today;
+
+  // multimap allows holding multiple values with the same key in a map for quick access
   std::multimap<Date, Event> events_upcoming;
 
   for (Event event : events)
@@ -447,6 +491,7 @@ void Calendar::getScheduleView(Date &date)
 
   std::cout << std::left << date.getWeekDay() << " " << months[date.getMonth() - 1] << " " << std::setw(2) << date.getDay() << " | ";
 
+  // custom output styling for different amount of events
   if (events_today.empty())
   {
     std::cout << "no events for today" << std::endl;
@@ -460,6 +505,8 @@ void Calendar::getScheduleView(Date &date)
     std::cout << events[0].getName() << " and " << (events_today.size() - 1) << " more..." << std::endl;
   }
 
+  
+  // print all upcoming events in the future but restrict the view to only 6 of them
   int max_schedule_length = (events_upcoming.size() <= 6) ? events_upcoming.size() : 6;
 
   auto it = events_upcoming.begin();
@@ -554,17 +601,21 @@ void Calendar::getSelectedEvent(Date &date)
 {
   std::vector<Event> events_today;
 
+  // Find events that occour that day
   for (auto event : events)
     if (event.getStartDate() == date)
       events_today.push_back(event);
 
+  // ID used for selection of the desired event
   int temp_id = 1;
 
+  // Proper styling based on vector contents
   if (events_today.size())
     std::cout << "Events today: " << std::endl;
   else
     std::cout << "No events for today" << std::endl;
 
+  // for every event occuring that day, print out all details about it
   for (auto event : events_today)
   {
     auto sDate = event.getStartDate();
@@ -599,6 +650,7 @@ void Calendar::getHelpView()
   ioctl(0, TIOCGWINSZ, &w);
   const int COLS = w.ws_col;
 
+  // print the dashes to divide the window into two panels
   std::cout << std::string(COLS, '-') << std::endl;
 
   std::cout << "→ - next day            "

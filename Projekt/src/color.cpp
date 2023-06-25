@@ -8,21 +8,30 @@
 
 #include "../include/color.h"
 
-// for reference: https://en.wikipedia.org/wiki/ANSI_escape_code
+/// @brief for reference: https://en.wikipedia.org/wiki/ANSI_escape_code
+/// @return Returns a vector of ansi extended color space
 std::vector<std::pair<std::string, Color>> generateColors()
 {
   int r, g, b = 0;
+  // color range rgb steps
   std::vector<int> color_range = {0, 95, 135, 175, 215, 255};
   int r_range = 0, g_range = 0, b_range = 0;
 
   std::vector<std::pair<std::string, Color>> colors;
+  // 16-232 is a extended color spectrum
   for (int i = 16; i < 232; i++)
   {
+    // get ansi escape code sequence
     std::string code = "\033[48;5;" + std::to_string(i) + "m";
+
+    // get color based on provided r, g, b values
     Color color(r, g, b);
 
+    // push a color pair into an array
     colors.push_back({code, color});
 
+    // increment all variables for the next color
+    // works like incrementing numbers in mathematics 1...9 then 1 and 0 for 10
     b_range++;
     if (b_range >= color_range.size())
     {
@@ -39,13 +48,17 @@ std::vector<std::pair<std::string, Color>> generateColors()
       }
     }
 
+    // set new color ranges from the array
     b = color_range[b_range];
     g = color_range[g_range];
     r = color_range[r_range];
   }
+
+  // return the array
   return colors;
 }
 
+// variable that generates those colors
 const std::vector<std::pair<std::string, Color>> colors = generateColors();
 
 Color::Color()
