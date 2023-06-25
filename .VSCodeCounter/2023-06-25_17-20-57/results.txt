@@ -1,0 +1,55 @@
+Date : 2023-06-25 17:20:57
+Directory : /home/mike/Projects/daf76dcf-gr31-repo/Projekt
+Total : 25 files,  1874 codes, 420 comments, 531 blanks, all 2825 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| C++      |         21 |      1,776 |        420 |        503 |      2,699 |
+| Markdown |          4 |         98 |          0 |         28 |        126 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                           | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                              |         25 |      1,874 |        420 |        531 |      2,825 |
+| . (Files)                                                                      |          1 |          1 |          0 |          0 |          1 |
+| docs                                                                           |          3 |         97 |          0 |         28 |        125 |
+| include                                                                        |          8 |        202 |        327 |        116 |        645 |
+| src                                                                            |          9 |      1,264 |         93 |        308 |      1,665 |
+| tests                                                                          |          4 |        310 |          0 |         79 |        389 |
++--------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                       | language | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/README.md                       | Markdown |          1 |          0 |          0 |          1 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/docs/project_classes_structs.md | Markdown |         17 |          0 |         16 |         33 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/docs/project_sketch.md          | Markdown |         74 |          0 |         10 |         84 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/docs/projekt.md                 | Markdown |          6 |          0 |          2 |          8 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/arguments.h             | C++      |          4 |         15 |          3 |         22 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/calendar.h              | C++      |         48 |         56 |         25 |        129 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/color.h                 | C++      |         26 |         49 |         17 |         92 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/date.h                  | C++      |         33 |         61 |         23 |        117 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/event.h                 | C++      |         46 |         68 |         24 |        138 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/file.h                  | C++      |         12 |         19 |          5 |         36 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/form.h                  | C++      |          9 |         14 |          3 |         26 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/include/time.h                  | C++      |         24 |         45 |         16 |         85 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/arguments.cpp               | C++      |         51 |          0 |          5 |         56 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/calendar.cpp                | C++      |        529 |         54 |        109 |        692 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/color.cpp                   | C++      |        142 |         12 |         38 |        192 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/date.cpp                    | C++      |        160 |          0 |         47 |        207 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/event.cpp                   | C++      |        138 |          0 |         37 |        175 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/file.cpp                    | C++      |         57 |          0 |         14 |         71 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/form.cpp                    | C++      |         77 |         13 |         23 |        113 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/main.cpp                    | C++      |         21 |         14 |          9 |         44 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/src/time.cpp                    | C++      |         89 |          0 |         26 |        115 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/tests/color.test.cpp            | C++      |         58 |          0 |         14 |         72 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/tests/date.test.cpp             | C++      |        112 |          0 |         30 |        142 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/tests/event.test.cpp            | C++      |         69 |          0 |         13 |         82 |
+| /home/mike/Projects/daf76dcf-gr31-repo/Projekt/tests/time.test.cpp             | C++      |         71 |          0 |         22 |         93 |
+| Total                                                                          |          |      1,874 |        420 |        531 |      2,825 |
++--------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
